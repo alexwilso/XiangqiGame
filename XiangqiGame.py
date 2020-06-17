@@ -1282,3 +1282,4 @@ class XiangqiGame:
             return True
         else:
             return False
+
