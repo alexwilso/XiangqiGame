@@ -7,7 +7,7 @@ from XiangqiGame import XiangqiGame
 
 
 class GeneralTest(unittest.TestCase):
-    """Test functionality of Xiangqi game"""
+    """Test functionality of General's movement"""
 
     def setUp(self) -> None:
         self.game = XiangqiGame()
@@ -23,6 +23,7 @@ class GeneralTest(unittest.TestCase):
         self.assertFalse(self.game.make_move("d9", "c9")) # Tries to move black general out of palace
 
 class AdvisorTest(unittest.TestCase):
+    """Test functionality of advisor's movements"""
 
     def setUp(self) -> None:
         self.game = XiangqiGame()
