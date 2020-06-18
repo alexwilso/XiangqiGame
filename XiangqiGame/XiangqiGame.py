@@ -11,6 +11,7 @@ class XiangqiGame:
     """Class that represents Xiangqi game. Class puts pieces on board, sets active player, determines piece movements,
     and determines whether game has been won or is still unfinished."""
 
+
     def __init__(self):
         self._player_red = "red_player"
         self._player_black = "black_player"
@@ -88,6 +89,17 @@ class XiangqiGame:
     def get_black_general_loc(self):
         """Returns current location of black general"""
         return self._black_general_loc
+
+    def convert_move_click(self, space):
+        """Converts player move to index value in list, assigns value to col and row"""
+        move = None
+
+        letter = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]  # list of letters used to find row index
+        nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]  # list of numbers used to find col ind
+
+        move = str(letter[space[1]]) + str(nums[space[0]])
+        return move
+
 
     def convert_move(self, space):
         """Converts player move to index value in list, assigns value to col and row"""
