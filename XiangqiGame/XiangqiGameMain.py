@@ -45,7 +45,7 @@ def main():
                     print(False)
                 else:
                     print(location)
-                    col = (location[0]//150) - 1
+                    col = (location[0]//121) - 1
                     row = (location[1]//100) - 1
                     print(row)
                     print(col)
