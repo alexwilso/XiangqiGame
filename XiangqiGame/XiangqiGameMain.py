@@ -60,12 +60,8 @@ def main():
                     if col == 9:
                         col = 8
                     row = (location[1]//100) - 1
-                    print(location)
-                    print(row)
-                    print(col)
                     if click_num == 0:
                         move_from = [row, col]
-                        print(gs.convert_move_click(move_from))
                         click_num += 1
                         move_try = [row, col]
                         first_move = True
@@ -97,7 +93,7 @@ def drawboard(screen, row, col, move_from, move_to):
     for x in range(DIMENSION_HEIGHT):
         for y in range(DIMENSION_WIDTH):
             if move_to and x == row and y == col:
-                pygame.draw.rect(screen, pygame.Color(57, 255, 20),
+                pygame.draw.rect(screen, pygame.Color(23, 235, 0),
                                  pygame.Rect(y * SQ_SIZE_Width + 150, x * SQ_SIZE_Height + 100, SQ_SIZE_Width,
                                              SQ_SIZE_Height))
             elif not move_to and not move_from and x == row and y == col:
