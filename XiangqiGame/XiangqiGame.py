@@ -82,6 +82,9 @@ class XiangqiGame:
         """Returns current game state"""
         return self._game_state
 
+    def get_in_check(self):
+        return self._in_check
+
     def get_red_general_loc(self):
         "Returns current location of red general"
         return self._red_general_loc
