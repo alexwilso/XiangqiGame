@@ -100,6 +100,7 @@ class XiangqiGame:
         letter = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]  # list of letters used to find row index
         nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]  # list of numbers used to find col ind
 
+        # move is set to letter and number format
         move = str(letter[space[1]]) + str(nums[space[0]])
         return move
 
@@ -972,105 +973,134 @@ class XiangqiGame:
         complete = False
         move_from = self.convert_move(move_from)  # converts move from
         move_to = self.convert_move(move_to)  # converts move to
-        piece = self.get_piece(move_from[0], move_from[1])  # selects piece based on move from selection
-        # print(move_from)
-        # print(move_to)
-        piece_to = self.get_piece(move_to[0], move_to[1])
+        piece = self.get_piece(move_from[0], move_from[1])  # sets piece, to piece in space user moving from
+        piece_to = self.get_piece(move_to[0], move_to[1])  # sets piece_to, to piece in space user moving to
 
-        # Makes sure players are rotating.
-        if self._active_player == self._player_red:  # checks if active player == red player
-            for x in self._black_pieces:  # iterates through list of black pieces
-                if piece == x:  # if player chooses black piece while active player is red
-                    return False  # false is returned
-        elif self._active_player == self._player_black:  # checks if active player == black player
-            for y in self._red_pieces:  # iterates through list of red pieces
-                if piece == y:  # if player chooses red piece while active player is black
-                    return False  # false is returned
+        # if active player is red and player selects black piece, false is returned
+        if self._active_player == self._player_red:
+            for x in self._black_pieces:
+                if piece == x:
+                    return False
 
-        if self._game_state != "UNFINISHED":  # if game not unfinished
-            return False  # false is returned
+        # if active player is black and player selects red piece, false is returned
+        elif self._active_player == self._player_black:
+            for y in self._red_pieces:
+                if piece == y:
+                    return False
 
-        if piece == self._red_general:  # if piece is red general
+        # if game state isn't unfinished, false is returned
+        if self._game_state != "UNFINISHED":
+            return False  #
+
+        # if piece is the elephant, tries move selection and sets complete to result
+        if piece == self._red_general:
             complete = self.move_red_general(move_from[0], move_from[1], move_to[0],
-                                             move_to[1])  # fills move from and to
+                                             move_to[1])
+            # if complete is true, red general location is updated
             if complete:
-                self._red_general_loc = [move_to[0], move_to[1]]  # sets red general location
+                self._red_general_loc = [move_to[0], move_to[1]]
 
-        if piece == self._black_general:  # if piece is black general
+        # if piece is the black general, tries move selection and sets complete to result
+        if piece == self._black_general:
             complete = self.move_black_general(move_from[0], move_from[1], move_to[0],
-                                               move_to[1])  # fills move from and to
+                                               move_to[1])
+            # if complete is true, black geneal location is updated
             if complete:
-                self._black_general_loc = [move_to[0], move_to[1]]  # sets black general location
+                self._black_general_loc = [move_to[0], move_to[1]]
 
-        if piece == self._red_advisor:  # if piece is red advisor
+        # if piece is the red advisor, tries move selection and sets complete to result
+        if piece == self._red_advisor:
             complete = self.move_red_advisors(move_from[0], move_from[1], move_to[0],
-                                              move_to[1])  # fills move from and to
+                                              move_to[1])
 
-        if piece == self._black_advisor:  # if piece is black advisor
+        # if piece is the black advisor, tries move selection and sets complete to result
+        if piece == self._black_advisor:
             complete = self.move_black_advisor(move_from[0], move_from[1], move_to[0],
-                                               move_to[1])  # fills move from and to
+                                               move_to[1])
 
-        if piece == self._red_elephant:  # if piece is elephant
+        # if piece is the red elephant, tries move selection and sets complete to result
+        if piece == self._red_elephant:
             complete = self.move_red_elephant(move_from[0], move_from[1], move_to[0],
-                                              move_to[1])  # fills move from and to
+                                              move_to[1])
 
-        if piece == self._black_elephant:  # if piece is black elephant
+        # if piece is the elephant, tries move selection and sets complete to result
+        if piece == self._black_elephant:
             complete = self.move_black_elephant(move_from[0], move_from[1], move_to[0],
-                                                move_to[1])  # fills move from and to
+                                                move_to[1])
 
-        if piece == self._red_horse:  # if piece is red horse
-            complete = self.move_red_horse(move_from[0], move_from[1], move_to[0], move_to[1])  # fills move from and to
+        # if piece is the red horse, tries move selection and sets complete to result
+        if piece == self._red_horse:
+            complete = self.move_red_horse(move_from[0], move_from[1], move_to[0], move_to[1])
 
-        if piece == self._black_horse:  # if piece is black horse
+        # if piece is the black horse, tries move selection and sets complete to result
+        if piece == self._black_horse:
             complete = self.move_black_horse(move_from[0], move_from[1], move_to[0],
-                                             move_to[1])  # fills move from and to
+                                             move_to[1])
 
-        if piece == self._red_chariot:  # if piece is red chariot
+        # if piece is the red chariot, tries move selection and sets complete to result
+        if piece == self._red_chariot:
             complete = self.move_red_chariot(move_from[0], move_from[1], move_to[0],
-                                             move_to[1])  # fills move from and to
+                                             move_to[1])
 
-        if piece == self._black_chariot:  # if piece is black chariot
+        # if piece is the black chariot, tries move selection and sets complete to result
+        if piece == self._black_chariot:
             complete = self.move_black_chariot(move_from[0], move_from[1], move_to[0],
-                                               move_to[1])  # fills move from and to
+                                               move_to[1])
 
-        if piece == self._red_cannon:  # if piece is red cannon
+        # if piece is the red cannon, tries move selection and sets complete to result
+        if piece == self._red_cannon:
             complete = self.move_red_cannon(move_from[0], move_from[1], move_to[0],
-                                            move_to[1])  # fills move from and to
+                                            move_to[1])
 
-        if piece == self._black_cannon:  # if piece is black cannon
+        # if piece is the black cannon, tries move selection and sets complete to result
+        if piece == self._black_cannon:
             complete = self.move_black_cannon(move_from[0], move_from[1], move_to[0],
-                                              move_to[1])  # fills move from an to
+                                              move_to[1])
 
-        if piece == self._red_soldier:  # if piece is red soldier
+        # if piece is the red soldier, tries move selection and sets complete to result
+        if piece == self._red_soldier:
             complete = self.move_red_soldier(move_from[0], move_from[1], move_to[0],
-                                             move_to[1])  # fills move from and to
+                                             move_to[1])
 
-        if piece == self._black_soldier:  # if piece is black soldier
+        # if piece is the black soldier, tries move selection and sets complete to result
+        if piece == self._black_soldier:
             complete = self.move_black_soldier(move_from[0], move_from[1], move_to[0],
-                                               move_to[1])  # fills move from and to
+                                               move_to[1])
 
         if complete:  # if move is complete
             self._board[move_to[0]][move_to[1]] = piece  # move_to set to piece
             self._board[move_from[0]][move_from[1]] = ""  # original move from set to empty
-            if self._in_check == "BLACK_IN_CHECK":  # if black is in check
-                if self.black_in_check():  # black in check is run again to see if move gets black out of check
+
+            # if black is in check, black in check is run again to see if move gets black out of check. If black still
+            # in check after move, move is not completed and false is returned
+            if self._in_check == "BLACK_IN_CHECK":
+                if self.black_in_check():
                     self._board[move_to[0]][move_to[1]] = piece_to  # move_to set to piece
                     self._board[move_from[0]][move_from[1]] = piece  # original move from set to empty
                     return False
-            if self._in_check == "RED_IN_CHECK":  # if red is in check
-                if self.red_in_check():  # red in check is run again to see if red still in check after move
-                    self._board[move_to[0]][move_to[1]] = piece_to  # move_to set to piece
-                    self._board[move_from[0]][move_from[1]] = piece  # original move from set to empty
+
+            # if red is in check, red in check is run again to see if move gets red out of check. If red still
+            # in check after move, move is not completed and false is returned
+            if self._in_check == "RED_IN_CHECK":
+                if self.red_in_check():
+                    self._board[move_to[0]][move_to[1]] = piece_to
+                    self._board[move_from[0]][move_from[1]] = piece
                     return False
+
+            # if red is active player, flying black general is run to see if user move lost red game. Black in check is
+            # run and if true black in checkmate is run to see if red has won game. Active player is set to black player
+            # and complete is returned
             if self._active_player == self._player_red:  # if red player moved
                 if self.flying_black_general_check():  # runs flying black general, to see if game is won by black
                     self._game_state = "BLACK_WON"
                 if self.black_in_check():  # if black is in check
                     self.black_in_checkmate()  # black is in checkmate is run
                 self.set_active_player(self._player_black)  # sets active player to black
-                if piece == self._red_general:  # updates location of red general
-                    self._red_general_loc = [move_to[0], move_to[1]]
-                return complete  # complete is returned
+                return complete
+
+            # if black is active player, flying red general is run to see if user move lost black game. Red in check is
+            # run and if true red in checkmate is run to see if black has won game. Active player is set to red player
+            # and complete is returned
             if self._active_player == self._player_black:  # if black player moved
                 if self.flying_red_general_check():  # runs flying red general, to see if game is won by red
                     self._game_state = "RED_WON"
@@ -1084,32 +1114,35 @@ class XiangqiGame:
         return complete
 
     def return_index(self):
-        """Class that gets piece locations on board. Appends to list, along with piece name. [piece, [row, col]"""
-        self.piece_location = []  # sets piece locatoin list to empty
-        # iterates through 1 - 9
+        """Function that gets piece locations on board. Appends to list, along with piece name. [piece, [row, col]"""
+        self.piece_location = []  # sets piece location list to empty
+
+        # appends piece and location to piece location list, used to track pieces on board
         for x in range(10):
-            # iterates through 1-8
             for y in range(9):
-                # gets location off all pieces left on board
                 self.piece_location.append([self.get_piece(x, y), [x, y]])
         return self.piece_location
 
     def black_in_check(self):
         """Class that determines if red is in check. Test all available moves for red pieces. Appends true moves to list
         then checks if available moves == black general's location. If so, red is in check and true is returned"""
-        redloc = []  # list used ti keep track of location of all red pieces
+        red_piece_location = []  # list used ti keep track of location of all red pieces
         self._red_moves_allowed = []  # list used to keep track of all available red moves
         self._black_in_check_by = []  # empties list used to track of piece checking red general
 
-        for x in self.return_index():  # iterates through all spaces on board
-            for y in self._red_pieces:  # iterates through list of all red pieces
-                if x[0] == y:  # if space contains red pieces
-                    redloc.append(x)  # it is appended to list to track red pieces
+        # iterates through spaces on board and red pieces, appends red pieces to red piece location list.
+        for x in self.return_index():
+            for y in self._red_pieces:
+                if x[0] == y:  #
+                    red_piece_location.append(x)
 
         # iterates through spaces with red pieces and test all moves on board
         # if true is returned, the move to row and column are appended to moves allowed list
         # if move == black_general loc, piece and its location appended to _in_check_by list
-        for x in redloc:
+        for x in red_piece_location:
+
+            # If piece is red advisor, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture black general, piece and move are added to black in check by list
             if x[0] == self._red_general:
                 for y in self.all_moves:
                     if self.move_red_general(x[1][0], x[1][1], y[0], y[1]):
@@ -1117,6 +1150,8 @@ class XiangqiGame:
                         if [y[0], y[1]] == self._black_general_loc:
                             self._black_in_check_by = [self._red_general, x[1][0], x[1][1]]
 
+            # If piece is red advisor, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture black general, piece and move are added to black in check by list
             if x[0] == self._red_advisor:
                 for y in self.all_moves:
                     if self.move_red_advisors(x[1][0], x[1][1], y[0], y[1]):
@@ -1124,6 +1159,8 @@ class XiangqiGame:
                         if [y[0], y[1]] == self._black_general_loc:
                             self._black_in_check_by = [self._red_advisor, x[1][0], x[1][1]]
 
+            # If piece is red elephant, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture black general, piece and move are added to black in check by list
             if x[0] == self._red_elephant:
                 for y in self.all_moves:
                     if self.move_red_elephant(x[1][0], x[1][1], y[0], y[1]):
@@ -1131,6 +1168,8 @@ class XiangqiGame:
                         if [y[0], y[1]] == self._black_general_loc:
                             self._black_in_check_by = [self._red_elephant, x[1][0], x[1][1]]
 
+            # If piece is red horse, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture black general, piece and move are added to black in check by list
             if x[0] == self._red_horse:
                 for y in self.all_moves:
                     if self.move_red_horse(x[1][0], x[1][1], y[0], y[1]):
@@ -1138,6 +1177,8 @@ class XiangqiGame:
                         if [y[0], y[1]] == self._black_general_loc:
                             self._black_in_check_by = [self._red_horse, x[1][0], x[1][1]]
 
+            # If piece is red cannon, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture black general, piece and move are added to black in check by list
             if x[0] == self._red_cannon:
                 for y in self.all_moves:
                     if self.move_red_cannon(x[1][0], x[1][1], y[0], y[1]):
@@ -1145,6 +1186,8 @@ class XiangqiGame:
                         if [y[0], y[1]] == self._black_general_loc:
                             self._black_in_check_by = [self._red_cannon, x[1][0], x[1][1]]
 
+            # If piece is red chariot, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture black general, piece and move are added to black in check by list
             if x[0] == self._red_chariot:
                 for y in self.all_moves:
                     if self.move_red_chariot(x[1][0], x[1][1], y[0], y[1]):
@@ -1152,6 +1195,8 @@ class XiangqiGame:
                         if [y[0], y[1]] == self._black_general_loc:
                             self._black_in_check_by = [self._red_chariot, x[1][0], x[1][1]]
 
+            # If piece is red soldier, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture black general, piece and move are added to black in check by list
             if x[0] == self._red_soldier:
                 for y in self.all_moves:
                     if self.move_red_soldier(x[1][0], x[1][1], y[0], y[1]):
@@ -1172,19 +1217,22 @@ class XiangqiGame:
     def red_in_check(self):
         """Class that determines if red is in check. Test all available moves for red pieces. Appends true moves to list
         then checks if available moves == red general's location. If so, red is in check and true is returned"""
-        blackloc = []  # list used to keep track of location of all black pieces
+        black_piece_location = []  # list used to keep track of location of all black pieces
         self._black_moves_allowed = []  # empties list used to keep track of true moves
         self._red_in_check_by = []  # empties list used to track of piece checking red general
 
         for x in self.return_index():  # iterates through all spaces on board
             for y in self._black_pieces:  # iterates through all black pieces on board
                 if x[0] == y:  # if x == y
-                    blackloc.append(x)  # space is appended to list to keep track of black location
+                    black_piece_location.append(x)  # space is appended to list to keep track of black location
 
         # iterates through spaces with black pieces and test all moves on board
         # if true is returned, the move to row and column are appended to moves allowed list
         # if move == red_general loc, piece and its location appended to _in_check_by list
-        for x in blackloc:
+        for x in black_piece_location:
+
+            # If piece is black general, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture red general, piece and move are added to red in check by list
             if x[0] == self._black_general:
                 for y in self.all_moves:
                     if self.move_black_general(x[1][0], x[1][1], y[0], y[1]):
@@ -1192,6 +1240,8 @@ class XiangqiGame:
                         if [y[0], y[1]] == self._red_general_loc:
                             self._red_in_check_by = [self._black_general, x[1][0], x[1][1]]
 
+            # If piece is black advisor, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture red general, piece and move are added to red in check by list
             if x[0] == self._black_advisor:
                 for y in self.all_moves:
                     if self.move_black_advisor(x[1][0], x[1][1], y[0], y[1]):
@@ -1199,6 +1249,8 @@ class XiangqiGame:
                         if [y[0], y[1]] == self._red_general_loc:
                             self._red_in_check_by = [self._black_advisor, x[1][0], x[1][1]]
 
+            # If piece is black elephant, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture red general, piece and move are added to red in check by list
             if x[0] == self._black_elephant:
                 for y in self.all_moves:
                     if self.move_black_elephant(x[1][0], x[1][1], y[0], y[1]):
@@ -1206,6 +1258,8 @@ class XiangqiGame:
                         if [y[0], y[1]] == self._red_general_loc:
                             self._red_in_check_by = [self._black_elephant, x[1][0], x[1][1]]
 
+            # If piece is black horse, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture red general, piece and move are added to red in check by list
             if x[0] == self._black_horse:
                 for y in self.all_moves:
                     if self.move_black_horse(x[1][0], x[1][1], y[0], y[1]):
@@ -1213,6 +1267,8 @@ class XiangqiGame:
                         if [y[0], y[1]] == self._red_general_loc:
                             self._red_in_check_by = [self._black_horse, x[1][0], x[1][1]]
 
+            # If piece is black chariot, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture red general, piece and move are added to red in check by list
             if x[0] == self._black_chariot:
                 for y in self.all_moves:
                     if self.move_black_chariot(x[1][0], x[1][1], y[0], y[1]):
@@ -1220,6 +1276,8 @@ class XiangqiGame:
                         if [y[0], y[1]] == self._red_general_loc:
                             self._red_in_check_by = [self._black_chariot, x[1][0], x[1][1]]
 
+            # If piece is black cannon, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture red general, piece and move are added to red in check by list
             if x[0] == self._black_cannon:
                 for y in self.all_moves:
                     if self.move_black_cannon(x[1][0], x[1][1], y[0], y[1]):
@@ -1227,6 +1285,8 @@ class XiangqiGame:
                         if [y[0], y[1]] == self._red_general_loc:
                             self._red_in_check_by = [self._black_cannon, x[1][0], x[1][1]]
 
+            # If piece is black soldier, all spaces on board are run and true moves are appended to red moves allowed
+            # If piece can capture red general, piece and move are added to red in check by list
             if x[0] == self._black_soldier:
                 for y in self.all_moves:
                     if self.move_black_soldier(x[1][0], x[1][1], y[0], y[1]):
@@ -1264,6 +1324,7 @@ class XiangqiGame:
             if x == [self._red_in_check_by[1], self._red_in_check_by[2]]:
                 black_won = False
 
+        #if black_won is true, gamestate is updated to Black_WON and true is returned
         if black_won:
             self._game_state = "BLACK_WON"
             return True
@@ -1291,7 +1352,6 @@ class XiangqiGame:
                 red_won = False
 
         # if red won == True, True is returned and game state set to Red Won
-        # if not False is returned
         if red_won:
             self._game_state = "RED_WON"
             return True
