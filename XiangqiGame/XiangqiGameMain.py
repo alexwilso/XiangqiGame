@@ -22,7 +22,7 @@ icon = pygame.image.load("Pieces/xiangqi.png")
 pygame.display.set_icon(icon)
 
 
-def loadImages():
+def load_images():
     """
     Initializes dictionary of images used to put pieces on board
     """
@@ -32,6 +32,91 @@ def loadImages():
     for piece in pieces:  # loops through list of pieces, adds image location to image dictionary in proper format
         images[piece] = pygame.transform.scale(pygame.image.load("Pieces/" + piece + ".png"),
                                                (square_height, square_width))
+
+
+def draw_board(screen, row, col, move_from, move_to):
+    """Function that draws board. Colors pieces on board as they are selected by user. Move from = yellow, valid
+    move = green invalid move to = red. Count_row and """
+    current_row = 0  # tracks current row, used to color selected board spaces
+    current_col = 0  # tracks current column, used to color selected board spaces
+    colors = [pygame.Color(213, 166, 103), pygame.Color(0, 0, 0)]  # two colors of game board, black and tan
+
+    for x in range(number_rows):  # iterates through number of rows
+        for y in range(number_cols):  # iterates through number of columns
+
+            # if valid move to, space is turned to green
+            if move_to and x == row and y == col:
+                pygame.draw.rect(screen, pygame.Color(25, 255, 0),
+                                 pygame.Rect(y * square_height + 150, x * square_width + 100, square_height,
+                                             square_width))
+
+            # invalid move to, space turned red
+            elif not move_to and not move_from and x == row and y == col:
+                pygame.draw.rect(screen, pygame.Color(255, 10, 10),
+                                 pygame.Rect(y * square_height + 150, x * square_width + 100, square_height,
+                                             square_width))
+
+            # if selecting move from, space is turned yellow
+            elif move_from and not move_to and x == row and y == col:
+                pygame.draw.rect(screen, pygame.Color(255, 255, 0),
+                                 pygame.Rect(y * square_height + 150, x * square_width + 100, square_height,
+                                             square_width))
+
+            # Rows and columns are colored black and tan
+            else:
+                color = colors[((x + y) % 2)]
+                pygame.draw.rect(screen, color,
+                                 pygame.Rect(y * square_height + 150, x * square_width + 100, square_height,
+                                             square_width))
+                current_row += 1  # current_row is incremented
+                current_col += 1  # current_col is incremented
+
+
+def draw_pieces(screen, board):
+    """Functoin that draws pieces on game baord. Iterates through rows and columns and places piece on board if board
+    place is not empty"""
+    for x in range(number_rows):  # iterates through number of rows
+        for y in range(number_cols):  # itersates through number of columns
+            piece = board[x][y]  # sets piece to space on board
+            if piece != "":  # if board is not empty, appropriate piece is placed
+                screen.blit(images[piece],
+                            pygame.Rect(y * square_height + 150, x * square_width + 100, square_height,
+                                        square_width))
+
+
+def show_title(screen):
+    """displays title on screen"""
+    active_player = title_font.render("Xiangqi", True, (255, 255, 255))
+    screen.blit(active_player, (420, 0))
+
+
+def show_active_player(screen, player):
+    """displays active player on screen"""
+    active_player = font.render("Active Player: " + str(player), True, (255, 255, 255))
+    screen.blit(active_player, (10, 1133))
+
+
+def show_game_state(screen, game_state):
+    """Displays current game state on screen"""
+    active_player = font.render("Game State: " + str(game_state), True, (255, 255, 255))
+    screen.blit(active_player, (440, 1133))
+
+
+def show_in_check(screen, in_check):
+    """Displays piece in check on board"""
+    in_check = font.render("In Check: " + str(in_check), True, (255, 255, 255))
+    screen.blit(in_check, (850, 1133))
+
+
+def draw_xiangqi_game(screen, gs, row, col, move_from, move_to):
+    """Function that fills screen, draws board and pieces, shows title, active player, gamestate, and in check variables."""
+    screen.fill(pygame.Color(101, 67, 33))
+    draw_board(screen, row, col, move_from, move_to)
+    draw_pieces(screen, gs._board)
+    show_active_player(screen, gs.get_active_player())
+    show_game_state(screen, gs.get_game_state())
+    show_in_check(screen, gs.get_in_check())
+    show_title(screen)
 
 
 def main():
@@ -44,7 +129,7 @@ def main():
     pygame.display.set_caption("Xiangqi")  # displays Xiangqi title
     screen.fill(pygame.Color(101, 67, 33))  # fills background color of screen
     gs = XiangqiGame()  # gets XiangiGame class
-    loadImages()
+    load_images()
     click_number = 0
     move_to = []  # list used to track move to location
     move_from = []  # list used to track move from location
@@ -92,83 +177,9 @@ def main():
                         first_move = False  # first move is set to false
 
         # Updates screen and board based on user selection
-        drawXiangqiGame(screen, gs, move_try[0], move_try[1], first_move,
-                        valid_move)
+        draw_xiangqi_game(screen, gs, move_try[0], move_try[1], first_move,
+                          valid_move)
         pygame.display.update()  # display is updated
-
-
-def drawXiangqiGame(screen, gs, row, col, move_from, move_to):
-    """Function that fills screen, draws board and pieces, shows title, active player, gamestate, and in check variables."""
-    screen.fill(pygame.Color(101, 67, 33))
-    drawboard(screen, row, col, move_from, move_to)
-    drawpieces(screen, gs._board)
-    show_active_player(screen, gs.get_active_player())
-    show_game_state(screen, gs.get_game_state())
-    show_in_check(screen, gs.get_in_check())
-    show_title(screen)
-
-
-def drawboard(screen, row, col, move_from, move_to):
-    """Function that draws board. Also colors pieces on board as they are selected by user. Move from = yellow, valid
-    move = green invalid move to = red"""
-    count_row = 0  # count rows used to color board spaces
-    count_col = 0  # count cols used to color board spaces
-    colors = [pygame.Color(213, 166, 103), pygame.Color(0, 0, 0)]  # two colors of game board, black and tan
-    for x in range(number_rows):  # iterates through number of rows
-        for y in range(number_cols):  # iterates through number of columns
-            if move_to and x == row and y == col:  # if valid move to, space is turned to green
-                pygame.draw.rect(screen, pygame.Color(25, 255, 0),
-                                 pygame.Rect(y * square_height + 150, x * square_width + 100, square_height,
-                                             square_width))
-            elif not move_to and not move_from and x == row and y == col:  # invalid move to, space turned red
-                pygame.draw.rect(screen, pygame.Color(255, 10, 10),
-                                 pygame.Rect(y * square_height + 150, x * square_width + 100, square_height,
-                                             square_width))
-            elif move_from and not move_to and x == row and y == col:  # if selecting move from, space is turned yellow
-                pygame.draw.rect(screen, pygame.Color(255, 255, 0),
-                                 pygame.Rect(y * square_height + 150, x * square_width + 100, square_height,
-                                             square_width))
-            else:  # else, rows and columns are colored black and tan
-                color = colors[((x + y) % 2)]
-                pygame.draw.rect(screen, color,
-                                 pygame.Rect(y * square_height + 150, x * square_width + 100, square_height,
-                                             square_width))
-                count_row += 1
-                count_col += 1
-
-
-def drawpieces(screen, board):
-    """Functoin that draws pieces on game baord """
-    for x in range(number_rows):  # iterates through number of rows
-        for y in range(number_cols):  # itersates through number of columns
-            piece = board[x][y]  # sets piece to space on board
-            if piece != "":  # if board is not empty, appropriate piece is placed
-                screen.blit(images[piece],
-                            pygame.Rect(y * square_height + 150, x * square_width + 100, square_height, square_width))
-
-
-def show_active_player(screen, player):
-    """displays active player on screen"""
-    active_player = font.render("Active Player: " + str(player), True, (255, 255, 255))
-    screen.blit(active_player, (10, 1133))
-
-
-def show_game_state(screen, game_state):
-    """Displays current game state on screen"""
-    active_player = font.render("Game State: " + str(game_state), True, (255, 255, 255))
-    screen.blit(active_player, (440, 1133))
-
-
-def show_in_check(screen, in_check):
-    """Displays piece in check on board"""
-    in_check = font.render("In Check: " + str(in_check), True, (255, 255, 255))
-    screen.blit(in_check, (850, 1133))
-
-
-def show_title(screen):
-    """displays title on screen"""
-    active_player = title_font.render("Xiangqi", True, (255, 255, 255))
-    screen.blit(active_player, (420, 0))
 
 
 if __name__ == '__main__':
