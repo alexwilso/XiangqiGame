@@ -116,7 +116,7 @@ class XiangqiGame:
         if len(move) == 3:  # if 10 in string,
             move[1:3] = [''.join(move[1: 3])]  # joins 1 and 0 to choose 10 from list
 
-        for x in move:  # iterates through move list
+        for x in move:
             if x in letter:  # checks for x in letters list
                 self._col = letter.index(x)  # assigns row to index of x in letters list
             if x in nums:  # checks for x in nums list
@@ -173,6 +173,7 @@ class XiangqiGame:
         for x in allowed_moves:  # checks if move is allowed
             if x == user_move:
                 move = True  # sets move to True if allowed move
+
         if move:  # if move is true
             return True  # True is returned
         else:
@@ -801,7 +802,6 @@ class XiangqiGame:
                 return False  # returns false if so
 
         if move_to_row - original_row >= 1:  # checks if piece is being toward away from player
-
             if space_to == "":  # if space_to is empty
                 if move_from_row + 1 > 9:  # checks if moving off board
                     return False
