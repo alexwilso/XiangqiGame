@@ -11,7 +11,6 @@ class XiangqiGame:
     """Class that represents Xiangqi game. Class puts pieces on board, sets active player, determines piece movements,
     and determines whether game has been won or is still unfinished."""
 
-
     def __init__(self):
         self._player_red = "red_player"
         self._player_black = "black_player"
@@ -104,7 +103,6 @@ class XiangqiGame:
         move = str(letter[space[1]]) + str(nums[space[0]])
         return move
 
-
     def convert_move(self, space):
         """Converts player move to index value in list, assigns value to col and row"""
         move = (
@@ -128,306 +126,340 @@ class XiangqiGame:
         return self._board[row][col]
 
     def flying_black_general_check(self):
-        """Red and black general cannot face each other. If they do, flying black general is executed, reds general is
-        captured and game is won by black player."""
-        row = self._black_general_loc[0] - 1  # sets row to row after location of black general
-        col = self._black_general_loc[1]  # sets column to same column as black general
-        while row >= 0:  # while row isn't to end of board
-            if [row, col] == self._red_general_loc:  # if location == red general location
-                self._game_state = "BLACK_WON"  # game is won by black
-                return True  # true is returned
-            if self._board[row][col] != "":  # if location on board is occupied
-                return False  # false is returned
-            row = row - 1  # 1 is subtracted from row and while loop continues
+        """Continues while row is less than number of rows on board. If row and col equal red general location, game
+        is set to black_won. Else false is returned"""
+
+        # row and col set to space 1 infront of black general
+        row = self._black_general_loc[0] - 1
+        col = self._black_general_loc[1]
+
+        # continues while row is valid spot on board. If row, col equal reds general location without encountering
+        # another True is returned.
+        while row >= 0:
+            if [row, col] == self._red_general_loc:
+                self._game_state = "BLACK_WON"
+                return True
+            if self._board[row][col] != "":
+                return False
+            row = row - 1
 
     def flying_red_general_check(self):
-        """Red and black general cannot face each other. If they do, flying red general is executed, blacks general is
-        captured and game is won by red player."""
-        row = self._red_general_loc[0] + 1  # sets row to row after location of red general
-        col = self._red_general_loc[1]  # sets column to same column as black general
-        while row <= 9:  # while row isnt at the end of the board
-            if [row, col] == self._black_general_loc:  # if row, col are equal to black gernal location
-                self._game_state = "RED_WON"  # game state is set to Red Won
-                return True  # True is returned
-            if self._board[row][col] != "":  # if location on board is occupied
-                return False  # false is returned
-            row = row - 1  # 1 is subtracted from row and while loop continues
+        """Continues while row is less than number of rows on board. If row and col equal black general location, game
+        is set to red_won. Else false is returned"""
+
+        # row and col set so space 1 in front of red general
+        row = self._red_general_loc[0] + 1
+        col = self._red_general_loc[1]
+
+        # continues while row is valid spot on board. If row, col equal reds general location without encountering
+        # another True is returned.
+        while row <= 9:
+            if [row, col] == self._black_general_loc:
+                self._game_state = "RED_WON"
+                return True
+            if self._board[row][col] != "":
+                return False
+            row = row - 1
 
     def move_red_general(self, move_from_row, move_from_col, move_to_row, move_to_col):
         """Moves red general within Palace 1 space orthogonally. Checks if move inside palace. Checks if move greater
           then 1 orthogonally, checks if space is empty. If so, true is returned. If not, false is returned"""
-        move = False  # sets move == False
-        allowed_moves = [[1, 0], [-1, 0], [0, 1], [0, -1]]  # allowed moves
-        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]  # creates list of user move distance
 
-        if move_to_row not in range(0, 3) or move_to_col not in range(3, 6):  # checks if move is in palace
+        move = False
+        allowed_moves = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]
+
+        # checks if move in palace
+        if move_to_row not in range(0, 3) or move_to_col not in range(3, 6):
             return False
 
-        for r in self._red_pieces:  # checks if move to contains red piece
+        # checks if moving onto red piece
+        for r in self._red_pieces:
             if self._board[move_to_row][move_to_col] == r:
-                return False  # if so returns false
+                return False
 
-        if self._board[move_from_row][move_from_col] != self._red_general:  # checks if move from contains general
-            return False  # returns false if so
+        # checks if user selected red general
+        if self._board[move_from_row][move_from_col] != self._red_general:
+            return False
 
-        for x in allowed_moves:  # checks if move is allowed
-            if x == user_move:
-                move = True  # sets move to True if allowed move
+        # checks if move allowed
+        if user_move in allowed_moves:
+            move = True
 
-        if move:  # if move is true
-            return True  # True is returned
-        else:
-            return False  # False is returned
+        return move
 
     def move_black_general(self, move_from_row, move_from_col, move_to_row, move_to_col):
         """Moves red general within Palace 1 space orthogonally. Checks if move inside palace. Checks if move greater
         than 1 orthogonally, checks if space is empty. If so move, true is returned If not, false is returned"""
-        move = False  # sets move == False
-        allowed_moves = [[1, 0], [-1, 0], [0, 1], [0, -1]]  # allowed moves
-        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]  # creates a list of user move distance
 
-        if move_to_row not in range(7, 10) or move_to_col not in range(3, 6):  # checks if move is in palace
-            return False  # returns false if not
+        move = False
+        allowed_moves = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]
 
-        for r in self._black_pieces:  # checks if move to contains black piece
-            if self._board[move_to_row][move_to_col] == r:
-                return False  # if so returns false
-
-        if self._board[move_from_row][move_from_col] != self._black_general:  # checks if move from contains general
-            return False  # returns false if so
-
-        for x in allowed_moves:  # checks if move is allowed
-            if x == user_move:
-                move = True
-        if move:
-            return True  # returns true
-        else:
+        # checks if move inside palace
+        if move_to_row not in range(7, 10) or move_to_col not in range(3, 6):
             return False
+
+        # checks if user moving onto black piece
+        for r in self._black_pieces:
+            if self._board[move_to_row][move_to_col] == r:
+                return False
+
+        # checks if user selected black general
+        if self._board[move_from_row][move_from_col] != self._black_general:
+            return False
+
+        # checks if move allowed
+        if user_move in allowed_moves:
+            move = True
+
+        return move
 
     def move_red_advisors(self, move_from_row, move_from_col, move_to_row, move_to_col):
         """Moves red advisor one space diagonally within palace. Checks if move contains red advisor, checks if move
         is in palace, checks if move is diagonal, If so, true is returned. If not, false is returned"""
-        move = False  # sets move to False
-        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]  # current move list
-        allowed_moves = [[1, 1], [-1, -1], [1, -1], [-1, 1]]  # list of allowed moves, can only move by 1
 
-        if self._board[move_from_row][move_from_col] != self._red_advisor:  # checks if move contains red advisor
+        move = False
+        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]
+        allowed_moves = [[1, 1], [-1, -1], [1, -1], [-1, 1]]
+
+        # checks if move contains red advisor
+        if self._board[move_from_row][move_from_col] != self._red_advisor:
             return False
 
-        if move_to_row not in range(0, 3) or move_to_col not in range(3, 6):  # checks if move is in palace
+        # checks if moving out of palace
+        if move_to_row not in range(0, 3) or move_to_col not in range(3, 6):
             return False
 
-        for r in self._red_pieces:  # checks if move to contains red piece
+        # checks if moving onto red piece
+        for r in self._red_pieces:
             if self._board[move_to_row][move_to_col] == r:
-                return False  # if not returns false
+                return False
 
-        for x in allowed_moves:  # iterates through list of allowed moves
-            if x == user_move:
-                move = True  # if user move == move, move is set to True
+        # checks if move allowed
+        if user_move in allowed_moves:
+            move = True
 
-        if move:  # if move is true
-            return True
-        else:  # if move not true
-            return False  # false is returned
+        return move
 
     def move_black_advisor(self, move_from_row, move_from_col, move_to_row, move_to_col):
         """Moves black advisor within palace on space diagongally. Checks if move contains black advisor, checks if move
         is in palace, checks if move is diagonal, If so, true is returned. If not, false is returned."""
-        move = False  # sets move to False
-        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]  # current move list
-        allowed_moves = [[1, 1], [-1, -1], [1, -1], [-1, 1]]  # list of allowed moves, can only move by 1
 
-        if self._board[move_from_row][move_from_col] != self._black_advisor:  # checks if move contains black advisor
-            return False  # if not returns false
+        move = False
+        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]
+        allowed_moves = [[1, 1], [-1, -1], [1, -1], [-1, 1]]
 
-        if move_to_row not in range(7, 10) or move_to_col not in range(3, 6):  # checks if move is in palace
-            return False  # returns false if not
+        # checks if move contains black advisor
+        if self._board[move_from_row][move_from_col] != self._black_advisor:
+            return False
 
-        for r in self._black_pieces:  # checks if move to contains black piece
+        # checks if moving out of palace
+        if move_to_row not in range(7, 10) or move_to_col not in range(3, 6):
+            return False
+
+        # checks if moving onto black piece
+        for r in self._black_pieces:
             if self._board[move_to_row][move_to_col] == r:
-                return False  # returns false if so
+                return False
 
-        for x in allowed_moves:  # iterates through list of allowed moves
-            if x == user_move:  # checks if user_move is in allowed moves
-                move = True  # returns true if so
+        # checks if move allowed
+        if user_move in allowed_moves:
+            move = True
 
-        if move:  # if move is true
-            return True  # true is returned
-        else:  # if move is not true
-            return False  # false is returned
+        return move
 
     def move_red_elephant(self, move_from_row, move_from_col, move_to_row, move_to_col):
         """Moves red elephant. Cannot cross river, only moves 2 spaces diagonal, can be blocked by enemy pieces. If
         allowable move, returns True, else returns false."""
-        move = False  # sets move to False
-        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]  # current move list
-        allowed_moves = [[2, 2], [-2, -2], [2, -2], [-2, 2]]  # list of allowed moves, can only move by 2
+        move = False
+        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]
+        allowed_moves = [[2, 2], [-2, -2], [2, -2], [-2, 2]]
 
-        if self._board[move_from_row][move_from_col] != self._red_elephant:  # checks if move contains red elephant
+        # checks if move contains red elephant
+        if self._board[move_from_row][move_from_col] != self._red_elephant:
             return False
 
-        if move_to_row not in range(0, 5) or move_to_col not in range(0, 9):  # checks if move is before river
-            return False  # returns false if not
+        # checks if moving across river
+        if move_to_row not in range(0, 5) or move_to_col not in range(0, 9):
+            return False
 
-        for r in self._red_pieces:  # checks if move to contains red piece
+        # checks if moving onto red piece
+        for r in self._red_pieces:
             if self._board[move_to_row][move_to_col] == r:
-                return False  # returns false if not
+                return False
 
-        for x in allowed_moves:  # iterates through list of allowed moves
-            if user_move == x:  # checks if user_move is in allowed moves
-                if x == [2, 2]:  # checks if piece is blocked by other piece
+        # iterates through list of allowed moves. For each move, checks if move 1 diagonal is blocked by another piece
+        for x in allowed_moves:
+            if user_move == x:
+
+                if x == [2, 2]:
                     if self._board[move_from_row + 1][move_from_col + 1] != "":
                         return False
+
                 elif x == [-2, -2]:
                     if self._board[move_from_row - 1][move_from_col - 1] != "":
                         return False
+
                 elif x == [2, -2]:
                     if self._board[move_from_row + 1][move_from_col - 1] != "":
                         return False
+
                 elif x == [-2, 2]:
                     if self._board[move_from_row - 1][move_from_col + 1] != "":
                         return False
-                move = True  # sets move to true if so
 
-        if move:  # if move is true
-            return True  # true is returned
-        else:  # if move is not true
-            return False  # false is returned
+                move = True
+
+        return move
 
     def move_black_elephant(self, move_from_row, move_from_col, move_to_row, move_to_col):
-        # go over blocking elehant one spce over
         """Moves red elephant. Cannot cross river, only moves 2 spaces diagonal, can be blocked by enemy pieces. If
         allowable move, returns True, else returns false."""
-        move = False  # sets move to False
-        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]  # current move list
-        allowed_moves = [[2, 2], [-2, -2], [2, -2], [-2, 2]]  # list of allowed moves, can only move by 2
 
-        if self._board[move_from_row][move_from_col] != self._black_elephant:  # checks if move contains black elephant
-            return False  # returns false if not
+        move = False
+        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]
+        allowed_moves = [[2, 2], [-2, -2], [2, -2], [-2, 2]]
 
-        if move_to_row not in range(5, 10) or move_to_col not in range(0, 9):  # checks if move is before river
-            return False  # returns false if not
+        # checks if move contains black elephant
+        if self._board[move_from_row][move_from_col] != self._black_elephant:
+            return False
 
-        for r in self._black_pieces:  # checks if move to contains black piece
+        # checks if trying to move across river
+        if move_to_row not in range(5, 10) or move_to_col not in range(0, 9):
+            return False
+
+        # checks if moving onto black piece
+        for r in self._black_pieces:
             if self._board[move_to_row][move_to_col] == r:
-                return False  # returns false if not
+                return False
 
-        for x in allowed_moves:  # iterates through list of allowed moves
-            if user_move == x:  # checks if user move is in allowed moves
-                if x == [2, 2]:  # checks if piece is blocked by other piece
+        # iterates through list of allowed moves. For each move, checks if move 1 diagonal is blocked by another piece
+        for x in allowed_moves:
+            if user_move == x:
+
+                if x == [2, 2]:
                     if self._board[move_from_row + 1][move_from_col + 1] != "":
                         return False
+
                 elif x == [-2, -2]:
                     if self._board[move_from_row - 1][move_from_col - 1] != "":
                         return False
+
                 elif x == [2, -2]:
                     if self._board[move_from_row + 1][move_from_col - 1] != "":
                         return False
+
                 elif x == [-2, 2]:
                     if self._board[move_from_row - 1][move_from_col + 1] != "":
                         return False
-                move = True  # sets move to true if so
+                move = True
 
-        if move:  # if move is true
-            return True  # true is returned
-        else:  # if move is false
-            return False  # false is returned
+        return move
 
     def move_red_horse(self, move_from_row, move_from_col, move_to_row, move_to_col):
         """Moves red horse 1 orthogonally, then one diagonally. Checks if blocked by red/black piece orthogonally
         prior to moving if so returns false, checks if red_horse present, checks if move to is blocked"""
-        move = False  # sets move = False
-        allowed_moves = [[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, -2, ], [-1, 2]]  # allowed moves
-        move_to_row_check = move_to_row - move_from_row  # checks move row
-        move_to_col_check = move_to_col - move_from_col  # checks move col
-        user_move = [move_to_row_check, move_to_col_check]  # current move list
+        move = False
+        allowed_moves = [[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, -2, ], [-1, 2]]
+        move_to_row_check = move_to_row - move_from_row
+        move_to_col_check = move_to_col - move_from_col
+        user_move = [move_to_row_check, move_to_col_check]
 
-        if self._board[move_from_row][move_from_col] != self._red_horse:  # if red horse not at move from
-            return False  # returns false
+        # checks  player selected red horse
+        if self._board[move_from_row][move_from_col] != self._red_horse:
+            return False
 
-        if move_to_row not in range(0, 10) or move_to_col not in range(0, 9):  # if move out of range
-            return False  # returns false
+        # checks if move on board
+        if move_to_row not in range(0, 10) or move_to_col not in range(0, 9):
+            return False
 
-        for r in self._red_pieces:  # checks if move to contains red piece
+        # checks if moving onto red piece
+        for r in self._red_pieces:
             if self._board[move_to_row][move_to_col] == r:
-                return False  # if so returns false
+                return False
 
-        for z in allowed_moves:  # iterates through list of allowed moves
-            if z == user_move:  # checks if user move is allowed move
-                move = True  # if so sets move to True
+        # checks if move allowed
+        if user_move in allowed_moves:
+            move = True
 
-        if move_to_row_check == 2:  # if moving 2 away from player
-            if self._board[move_from_row + 1][move_from_col] != "" or self._board[move_from_row + 1][
-                move_from_col] != "":  # checks if 1 away is occupied
-                return False  # if so returns false
+        # if moving away from player, checks if move 1 away is blocked
+        if move_to_row_check == 2:
+            if self._board[move_from_row + 1][move_from_col] != "" or self._board[move_from_row + 1][move_from_col] != "":
+                return False
 
-        if move_to_row_check == - 2:  # if moving 2 toward player,
+        # if moving toward player, checks if move 1 toward is blocked
+        if move_to_row_check == - 2:
             if self._board[move_from_row - 1][move_from_col] != "" or self._board[move_from_row - 1][
-                move_from_col] != "":  # checks if 1 toward player is occupied
-                return False  # if so returns false
+                move_from_col] != "":
+                return False
 
-        if move_to_col_check == 2:  # if moving 2 right,
+        # if moving right, checks if move 1 right is blocked
+        if move_to_col_check == 2:
             if self._board[move_from_row][move_from_col + 1] != "" or self._board[move_from_row][
-                move_from_col + 1] != "":  # checks if 1 right is occupied
-                return False  # if so returns false
+                move_from_col + 1] != "":
+                return False
 
-        if move_to_col_check == -2:  # if moving 2 left
+        # if moving left, checks if move 1 left is blocked
+        if move_to_col_check == -2:
             if self._board[move_from_row][move_from_col - 1] != "" or self._board[move_from_row][
-                move_from_col - 1] != "":  # checks if 1 left is occupied
-                return False  # if so returns false
+                move_from_col - 1] != "":
+                return False
 
-        if move:  # if move is true
-            return True  # True is returned
-        else:
-            return False  # if not false is returned
+        return move
 
     def move_black_horse(self, move_from_row, move_from_col, move_to_row, move_to_col):
         """Moves black horse 1 orthogonally, then one diagonally. Checks if blocked by red/black piece orthogonally
         prior to moving if so returns false, checks if black horse present, checks if move to is blocked"""
-        move = False  # sets move = False
-        allowed_moves = [[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, -2, ], [-1, 2]]  # allowed moves
-        move_to_row_check = move_to_row - move_from_row  # checks move row
-        move_to_col_check = move_to_col - move_from_col  # checks move col
-        user_move = [move_to_row_check, move_to_col_check]  # current move list
 
-        if self._board[move_from_row][move_from_col] != self._black_horse:  # if black horse not at move from
-            return False  # returns false
+        move = False
+        allowed_moves = [[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, -2], [-1, 2]]
+        move_to_row_check = move_to_row - move_from_row
+        move_to_col_check = move_to_col - move_from_col
+        user_move = [move_to_row_check, move_to_col_check]
 
-        if move_to_row not in range(0, 10) or move_to_col not in range(0, 9):  # if move out of range
-            return False  # returns false
+        # checks if user moving black horse
+        if self._board[move_from_row][move_from_col] != self._black_horse:
+            return False
 
-        for r in self._black_pieces:  # checks if move to contains black pieces
+        # checks if move on board
+        if move_to_row not in range(0, 10) or move_to_col not in range(0, 9):
+            return False
+
+        # checks if moving onto black piece
+        for r in self._black_pieces:
             if self._board[move_to_row][move_to_col] == r:
-                return False  # if so returns false
+                return False
 
-        for z in allowed_moves:  # checks if valid move
-            if z == user_move:
-                move = True  # if so sets move to True
+        # checks if move allowed
+        if user_move in allowed_moves:
+            move = True
 
-        if move_to_row_check == 2:  # if moving 2 away from player
+        # if moving away from player, checks if move 1 away is blocked
+        if move_to_row_check == 2:
             if self._board[move_from_row + 1][move_from_col] != "" or self._board[move_from_row + 1][
-                move_from_col] != "":  # checks if 1 away is occupied
-                return False  # if so returns false
+                    move_from_col] != "":
+                return False
 
-        if move_to_row_check == - 2:  # if moving 2 toward player,
+        # if moving toward player, checks if move 1 toward is blocked
+        if move_to_row_check == - 2:
             if self._board[move_from_row - 1][move_from_col] != "" or self._board[move_from_row - 1][
-                move_from_col] != "":  # checks if 1 toward player is occupied
-                return False  # if so returns false
+                    move_from_col] != "":
+                return False
 
-        if move_to_col_check == 2:  # if moving 2 right,
+        # if moving right, checks if move 1 right is blocked
+        if move_to_col_check == 2:
             if self._board[move_from_row][move_from_col + 1] != "" or self._board[move_from_row][
-                move_from_col + 1] != "":  # checks if 1 right is occupied
-                return False  # if so returns false
+                    move_from_col + 1] != "":
+                return False
 
-        if move_to_col_check == -2:  # if moving 2 left
+        # if moving left, checks if move 1 left is blocked
+        if move_to_col_check == -2:
             if self._board[move_from_row][move_from_col - 1] != "" or self._board[move_from_row][
-                move_from_col - 1] != "":  # checks if 1 left is occupied
-                return False  # if so returns false
+                    move_from_col - 1] != "":
+                return False
 
-        if move:  # if move is true
-            return True  # True is returned
-        else:
-            return False  # if not false is returned
+        return move
 
     def move_red_chariot(self, move_from_row, move_from_col, move_to_row, move_to_col, original_row=None,
                          original_col=None, count=0):
@@ -435,89 +467,110 @@ class XiangqiGame:
         range, and move to does not contain red piece. Cannot jump pieces. Uses recursion to check if piece is blocked
         as it moves. Can capture black piece if no piece in way. Returns True if move accepted and False if not"""
 
-        if count == 0:  # during first recursion
-            original_row = move_from_row  # original_row is set to move from
-            original_col = move_from_col  # original_col is set to move from
-            if move_from_row == move_to_row and move_from_col == move_to_col:  # checks if move from is == move to
-                return False  # returns false if so
+        # original_row and original_col set during first iteration
+        if count == 0:
+            original_row = move_from_row
+            original_col = move_from_col
 
-        if move_to_row == move_from_row and move_to_col == move_from_col:  # base case, when move from == move to
-            if count == 0:  # if piece tries to move onto itself, false is returned
+        # base case, when move to row/column equal move_from_row method stops and returns
+        if move_to_row == move_from_row and move_to_col == move_from_col:
+            if count == 0:
                 return False
             else:
-                return True  # true is returned
+                return True
 
-        if self._board[original_row][original_col] != self._red_chariot:  # if no piece at original move from
-            return False  # false is returned
+        # checks if original move contains red chariot
+        if self._board[original_row][original_col] != self._red_chariot:
+            return False
 
-        if move_to_row not in range(0, 10) or move_to_col not in range(0, 9):  # checks if move is on board
-            return False  # returns false if not
+        # checks if moving off board
+        if move_to_row not in range(0, 10) or move_to_col not in range(0, 9):
+            return False
 
-        for r in self._red_pieces:  # checks if move to contains red piece
+        # checks if moving onto red piece
+        for r in self._red_pieces:
             if self._board[move_to_row][move_to_col] == r:
-                return False  # returns false if so
-
-        if move_to_row - original_row > 0:  # checks if piece is being moved away from player. Move on row.
-
-            if move_from_row + 1 > 9:  # checks if moving out of bounds
                 return False
 
-            if [move_from_row + 1, move_from_col] == [move_to_row, move_to_col]:  # if next location is move to
+        # if moving away from player
+        if move_to_row - original_row > 0:
+
+            # checks if moving next row will move player off board
+            if move_from_row + 1 > 9:
+                return False
+
+            # if next row on board is move to, returns function, adding 1 to count and row
+            if [move_from_row + 1, move_from_col] == [move_to_row, move_to_col]:
                 return self.move_red_chariot(move_from_row + 1, move_from_col, move_to_row, move_to_col,
-                                             original_row, original_col, count + 1)  # returns method, adding one to row
+                                             original_row, original_col, count + 1)
 
-            if self._board[move_from_row + 1][move_from_col] != "":  # checks if next space is blocked by piece
-                return False  # returns false
+            # checks if next row is blocked by another piece
+            if self._board[move_from_row + 1][move_from_col] != "":
+                return False
 
+            # calls function, adding one to count and row
             return self.move_red_chariot(move_from_row + 1, move_from_col, move_to_row, move_to_col,
                                          original_row, original_col, count + 1)  # returns method, adding one to row
 
-        if move_to_row - original_row < 0:  # checks if piece is being moved toward player. Move on row.
+        # checks if moving toward player
+        if move_to_row - original_row < 0:
 
-            if move_from_row - 1 < 0:  # checks if moving off board
+            # checks if next row will move player off board
+            if move_from_row - 1 < 0:
                 return False
 
-            if [move_from_row - 1, move_from_col] == [move_to_row, move_to_col]:  # if next location is move to
+            # if next row on board is move to, returns function, subtracting 1 from row and adding 1 to count
+            if [move_from_row - 1, move_from_col] == [move_to_row, move_to_col]:
                 return self.move_red_chariot(move_from_row - 1, move_from_col, move_to_row, move_to_col,
-                                             original_row, original_col, count + 1)  # returns method, adding one to row
+                                             original_row, original_col, count + 1)
 
-            if self._board[move_from_row - 1][move_from_col] != "":  # checks if blocked by piece
-                return False  # returns false
+            # checks if next row is blocked by piece
+            if self._board[move_from_row - 1][move_from_col] != "":
+                return False
 
+            # calls function subtracting 1 from row and adding 1 to count
             return self.move_red_chariot(move_from_row - 1, move_from_col, move_to_row, move_to_col,
-                                         original_row, original_col, count + 1)  # returns method, subtracting one
-            # from row
+                                         original_row, original_col, count + 1)
 
-        if move_to_col - original_col >= 1:  # checks if piece is being moved right
+        # checks if moving piece right
+        if move_to_col - original_col >= 1:
 
-            if move_from_col + 1 > 8:  # checks if moving off board
+            # checks if next column will move piece off board
+            if move_from_col + 1 > 8:
                 return False
 
-            if [move_from_row, move_from_col + 1] == [move_to_row, move_to_col]:  # if next location is move to
+            # if next col is move to, returns method adding 1 to col and 1 to count
+            if [move_from_row, move_from_col + 1] == [move_to_row, move_to_col]:
                 return self.move_red_chariot(move_from_row, move_from_col + 1, move_to_row, move_to_col,
-                                             original_row, original_col, count + 1)  # returns method, adding one to col
+                                             original_row, original_col, count + 1)
 
-            if self._board[move_from_row][move_from_col + 1] != "":  # checks if blocked piece
-                return False  # returns false
-
-            return self.move_red_chariot(move_from_row, move_from_col + 1, move_to_row, move_to_col,
-                                         original_row, original_col, count + 1)  # returns method adding one to col
-
-        if move_to_col - original_col < 0:  # checks if piece is being moved left
-
-            if move_from_col - 1 < 0:  # checks if moving off board
+            # checks if column 1 over is blocked by piece
+            if self._board[move_from_row][move_from_col + 1] != "":
                 return False
 
-            if [move_from_row, move_from_col - 1] == [move_to_row, move_to_col]:  # if next move is move to
+            # calls function, adding 1 to column and 1 to count
+            return self.move_red_chariot(move_from_row, move_from_col + 1, move_to_row, move_to_col,
+                                         original_row, original_col, count + 1)
+
+        # checks if trying to move left
+        if move_to_col - original_col < 0:
+
+            # checks if next column will move piece off board
+            if move_from_col - 1 < 0:
+                return False
+
+            # if next column is move to, returns method subtracting 1 from col and adding 1 to count
+            if [move_from_row, move_from_col - 1] == [move_to_row, move_to_col]:
                 return self.move_red_chariot(move_from_row, move_from_col - 1, move_to_row, move_to_col,
-                                             original_row, original_col, count + 1)  # returns method, adding one to row
+                                             original_row, original_col, count + 1)
 
-            if self._board[move_from_row][move_from_col - 1] != "":  # checks if blocked by piece
-                return False  # returns false
+            # checks if column 1 over is blocked by another piece
+            if self._board[move_from_row][move_from_col - 1] != "":
+                return False
 
+            # returns method, subtracting 1 from column and adding 1 to count
             return self.move_red_chariot(move_from_row, move_from_col - 1, move_to_row, move_to_col,
-                                         original_row, original_col, count + 1)  # returns method, subtracting one
-            # from column
+                                         original_row, original_col, count + 1)
 
     def move_black_chariot(self, move_from_row, move_from_col, move_to_row, move_to_col, original_row=None,
                            original_col=None, count=0):
@@ -526,91 +579,114 @@ class XiangqiGame:
         blocked as it moves. Can capture black piece if no piece in way. Returns True if move accepted and False if
         not"""
 
-        if count == 0:  # sets original col/row used to clear old location
+        # sets original_row and column on first iteration
+        if count == 0:
             original_row = move_from_row
             original_col = move_from_col
-            if move_from_row == move_to_row and move_from_col == move_to_col:  # if move from == move to
-                return False  # false is returned
 
-        if move_to_row == move_from_row and move_to_col == move_from_col:  # base case, when move from == move to
-            if count == 0:  # if piece tries to move onto itself, false is returned
+        # base case, when move to row/column equal move_from_row method stops and returns
+        if move_to_row == move_from_row and move_to_col == move_from_col:
+            if count == 0:
                 return False
             else:
-                return True  # true is returned
+                return True
 
-        if self._board[original_row][original_col] != self._black_chariot:  # if no piece at original move from
-            return False  # false is returned
+        # checks if original move contains black chariot
+        if self._board[original_row][original_col] != self._black_chariot:
+            return False
 
-        if move_to_row not in range(0, 10) or move_to_col not in range(0, 9):  # checks if move is on board
-            return False  # returns false if not
+        # checks if moving off board
+        if move_to_row not in range(0, 10) or move_to_col not in range(0, 9):
+            return False
 
-        for r in self._black_pieces:  # checks if move to contains black piece
+        # checks if moving onto black piece
+        for r in self._black_pieces:
             if self._board[move_to_row][move_to_col] == r:
-                return False  # returns false if so
-
-        if move_to_row - original_row >= 1:  # checks if piece is being moved toward from player. Move one row.
-
-            if move_from_row + 1 > 9:  # checks if moving off board
                 return False
 
-            if [move_from_row + 1, move_from_col] == [move_to_row, move_to_col]:  # if next location is move to
+        # checks if moving away from player
+        if move_to_row - original_row >= 1:
+
+            # checks if moving off board
+            if move_from_row + 1 > 9:
+                return False
+
+            # checks if next row is space to move to, if so returns adding 1 to row and count
+            if [move_from_row + 1, move_from_col] == [move_to_row, move_to_col]:
                 return self.move_black_chariot(move_from_row + 1, move_from_col, move_to_row, move_to_col,
                                                original_row, original_col,
-                                               count + 1)  # returns method, adding one to row
+                                               count + 1)
 
-            if self._board[move_from_row + 1][move_from_col] != "":  # checks if next space is blocked by piece
-                return False  # returns false
-
-            return self.move_black_chariot(move_from_row + 1, move_from_col, move_to_row, move_to_col,
-                                           original_row, original_col, count + 1)  # returns method, adding one to row
-
-        if move_to_row - original_row < 0:  # checks if piece is being moved away player. Move on row.
-
-            if move_from_row - 1 < 0:  # checks if moving off board
+            # checks if next row empty
+            if self._board[move_from_row + 1][move_from_col] != "":
                 return False
 
-            if [move_from_row - 1, move_from_col] == [move_to_row, move_to_col]:  # if next location is move to
+            # returns method, adding 1 to count and row
+            return self.move_black_chariot(move_from_row + 1, move_from_col, move_to_row, move_to_col,
+                                           original_row, original_col, count + 1)
+
+            # checks if moving toward player
+        if move_to_row - original_row < 0:
+
+            # checks if moving off board
+            if move_from_row - 1 < 0:
+                return False
+
+            # if next row is move to row, returns method subtracting 1 from col and adding 1 to count
+            if [move_from_row - 1, move_from_col] == [move_to_row, move_to_col]:
                 return self.move_black_chariot(move_from_row - 1, move_from_col, move_to_row, move_to_col,
                                                original_row, original_col,
-                                               count + 1)  # returns method, adding one to row
+                                               count + 1)
 
-            if self._board[move_from_row - 1][move_from_col] != "":  # checks if blocked by piece
-                return False  # returns false
-
-            return self.move_black_chariot(move_from_row - 1, move_from_col, move_to_row, move_to_col,
-                                           original_row, original_col, count + 1)  # returns method, subtracting one
-            # from row
-
-        if move_to_col - original_col >= 1:  # checks if piece is being moved right
-
-            if move_from_col + 1 > 8:  # checks if moving off board
+            # checks if next column is empty
+            if self._board[move_from_row - 1][move_from_col] != "":
                 return False
 
-            if [move_from_row, move_from_col + 1] == [move_to_row, move_to_col]:  # if next location is move to
+            # returns method, subtracting 1 from column and adding 1 to count
+            return self.move_black_chariot(move_from_row - 1, move_from_col, move_to_row, move_to_col,
+                                           original_row, original_col, count + 1)
+
+        # checks if moving right
+        if move_to_col - original_col >= 1:
+
+            # checks if moving off board
+            if move_from_col + 1 > 8:
+                return False
+
+            # if next space is move to column, returns methhod adding 1 to column and count
+            if [move_from_row, move_from_col + 1] == [move_to_row, move_to_col]:
                 return self.move_black_chariot(move_from_row, move_from_col + 1, move_to_row, move_to_col,
                                                original_row, original_col,
-                                               count + 1)  # returns method, adding one to col
+                                               count + 1)
 
-            if self._board[move_from_row][move_from_col + 1] != "":  # checks if blocked piece
-                return False  # returns false
-
-            return self.move_black_chariot(move_from_row, move_from_col + 1, move_to_row, move_to_col,
-                                           original_row, original_col, count + 1)  # returns method adding one to col
-
-        if move_to_col - original_col < 0:  # checks if piece is being moved left
-
-            if move_from_col - 1 < 0:  # checks if moving off board
+            # checks if being blocked by another piece
+            if self._board[move_from_row][move_from_col + 1] != "":
                 return False
 
-            if [move_from_row, move_from_col - 1] == [move_to_row, move_to_col]:  # if next move is move to
+            # move is valid and space if free, method returned
+            return self.move_black_chariot(move_from_row, move_from_col + 1, move_to_row, move_to_col,
+                                           original_row, original_col, count + 1)
+
+        # checks if piece being moved left
+        if move_to_col - original_col < 0:
+
+            # checks if moving off board
+            if move_from_col - 1 < 0:
+                return False
+
+            # if move to is next move, returns function subtracting 1 from column and adding 1 to count
+            if [move_from_row, move_from_col - 1] == [move_to_row, move_to_col]:
                 return self.move_black_chariot(move_from_row, move_from_col - 1, move_to_row, move_to_col,
                                                original_row, original_col,
-                                               count + 1)  # returns method, adding one to row
-            if self._board[move_from_row][move_from_col - 1] != "":  # checks if blocked by piece
-                return False  # returns false if so
+                                               count + 1)
+
+            # checks if move blocked by piece
+            if self._board[move_from_row][move_from_col - 1] != "":
+                return False
+
+            # returns function subtracting 1 from column and adding 1 to count
             return self.move_black_chariot(move_from_row, move_from_col - 1, move_to_row, move_to_col,
-                                           original_row, original_col, count + 1)  # returns method, subtracting one
-            # from column
+                                           original_row, original_col, count + 1)
 
     def move_red_cannon(self, move_from_row, move_from_col, move_to_row, move_to_col, original_row=None,
                         original_col=None, count=0, jump=0):
@@ -661,7 +737,7 @@ class XiangqiGame:
                 return False
             if space_to == "":  # if space_to is empty
                 if self._board[move_from_row + 1][
-                    move_from_col] in self._black_pieces:  # checks if blocked by black piece
+                        move_from_col] in self._black_pieces:  # checks if blocked by black piece
                     return False  # False is returned
                 if self._board[move_from_row + 1][move_from_col] in self._red_pieces:  # checks if blocked by red piece
                     return False  # False is returned
@@ -673,7 +749,7 @@ class XiangqiGame:
                     return False  # False is returned
 
                 if self._board[move_from_row + 1][
-                    move_from_col] in self._black_pieces and move_from_row + 1 != move_to_row:  # checks if blocked by black piece
+                        move_from_col] in self._black_pieces and move_from_row + 1 != move_to_row:  # checks if blocked by black piece
                     jump += 1  # if so 1 added to jump
 
                 if self._board[move_from_row + 1][move_from_col] in self._red_pieces:  # checks if blocked by red piece
@@ -764,144 +840,218 @@ class XiangqiGame:
         move is blocked and false is returned. Also checks if move from equals black cannon and if move from contains
         black piece"""
 
-        space_to = self.get_piece(move_to_row, move_to_col)  # sets space to == piece at current space
+        space_to = self.get_piece(move_to_row, move_to_col)
 
-        if jump > 1:  # tracks the amount of jumps piece has made, > 1
-            return False  # returns False
+        # checks if jumping more than 1 piece
+        if jump > 1:
+            return False
 
-        if count == 0:  # on first iteration
-            original_row = move_from_row  # original row is set to move from row
-            original_col = move_from_col  # original col is set to move from col
+        # sets original row and column
+        if count == 0:
+            original_row = move_from_row
+            original_col = move_from_col
 
-        if move_to_row == move_from_row and move_to_col == move_from_col:  # base case, move from == move to
-            if count == 0:  # if piece trying to move onto itself, false is returned
+        # base case, when move to row and col are reached, method returns
+        if move_to_row == move_from_row and move_to_col == move_from_col:
+            if count == 0:
                 return False
             else:
-                return True  # True is returned
+                return True
 
-        if self._board[original_row][original_col] != self._black_cannon:  # if cannon not at original move
-            return False  # False is returned
-
-        if move_to_row not in range(0, 10) or move_to_col not in range(0, 9):  # checks if move is on board
-            return False  # if not False is returned
-
-        if move_to_row - move_from_row > 0 and move_to_col - move_from_col > 0:  # checks if move is moving horizontally
+        # checks if original space contains a black cannon
+        if self._board[original_row][original_col] != self._black_cannon:
             return False
 
-        if move_to_row - move_from_row < 0 and move_to_col - move_from_col < 0:  # checks if move is moving horizontally
+        # checks if move is diagonal, move is not valid
+        if move_to_row not in range(0, 10) or move_to_col not in range(0, 9):
             return False
 
-        if move_to_row - move_from_row > 0 and move_to_col - move_from_col < 0:  # checks if move is moving horizontally
+        # checks if move is diagonal, move is not valid
+        if move_to_row - move_from_row > 0 and move_to_col - move_from_col > 0:
             return False
 
-        if move_to_row - move_from_row < 0 and move_to_col - move_from_col > 0:  # checks if move is moving horizontally
+        # checks if move is diagonal, move is not valid
+        if move_to_row - move_from_row < 0 and move_to_col - move_from_col < 0:
             return False
 
-        for r in self._black_pieces:  # checks if move to contains black piece
+        # checks if move is diagonal, move is not valid
+        if move_to_row - move_from_row > 0 > move_to_col - move_from_col:
+            return False
+
+        # checks if move is diagonal, move is not valid
+        if move_to_row - move_from_row < 0 < move_to_col - move_from_col:
+            return False
+
+        # checks if trying to move onto black piece
+        for r in self._black_pieces:
             if self._board[move_to_row][move_to_col] == r:
-                return False  # returns false if so
+                return False
 
-        if move_to_row - original_row >= 1:  # checks if piece is being toward away from player
-            if space_to == "":  # if space_to is empty
-                if move_from_row + 1 > 9:  # checks if moving off board
+        # if moving away from player
+        if move_to_row - original_row >= 1:
+
+            # if moving to empty space
+            if space_to == "":
+
+                # checks if moving off board
+                if move_from_row + 1 > 9:
                     return False
-                if self._board[move_from_row + 1][
-                    move_from_col] in self._black_pieces:  # checks if blocked by black piece
-                    return False  # False is returned
-                if self._board[move_from_row + 1][move_from_col] in self._red_pieces:  # checks if blocked by red piece
-                    return False  # False is returned
 
-            if space_to != "":  # if trying to capture
-                if move_from_row + 1 > 9:  # checks if moving out of bounds
+                # checks if moving onto black piece
+                if self._board[move_from_row + 1][move_from_col] in self._black_pieces:
                     return False
-                if jump == 0 and move_from_row + 1 == move_to_row:  # if no jumps done and next move is move to
-                    return False  # False is returned
 
-                if self._board[move_from_row + 1][
-                    move_from_col] in self._red_pieces and move_from_row + 1 != move_to_row:  # checks if blocked by red piece
-                    jump += 1  # if so 1 added to jump
+                # checks if moving onto red piece
+                if self._board[move_from_row + 1][move_from_col] in self._red_pieces:
+                    return False
 
-                if self._board[move_from_row + 1][
-                    move_from_col] in self._black_pieces:  # checks if blocked by black piece
-                    jump += 1  # if so one added to jump
+            # if trying to capture
+            if space_to != "":
 
+                # checks if moving off board
+                if move_from_row + 1 > 9:
+                    return False
+
+                # checks if jump is made, jump must be made before capturing
+                if jump == 0 and move_from_row + 1 == move_to_row:
+                    return False
+
+                # checks if jumping red piece, if so adds 1 to jump
+                if self._board[move_from_row + 1][move_from_col] in self._red_pieces and move_from_row + 1 != \
+                        move_to_row:
+                    jump += 1
+
+                # checks if jumping black piece, if so adds 1 to jump
+                if self._board[move_from_row + 1][move_from_col] in self._black_pieces:
+                    jump += 1
+
+            # calls method, adding 1 to row and count
             return self.move_black_cannon(move_from_row + 1, move_from_col, move_to_row, move_to_col, original_row,
                                           original_col, count + 1, jump)  # returns method, adding one to row
 
-        if move_to_row - original_row < 0:  # checks if piece is being away toward player
+        # checks if being moved toward player
+        if move_to_row - original_row < 0:
 
-            if space_to == "":  # if space is empty
-                if move_from_row - 1 < 0:  # checks if moving off board
+            # if not trying to capture
+            if space_to == "":
+
+                # checks if moving off baord
+                if move_from_row - 1 < 0:
                     return False
-                if self._board[move_from_row - 1][
-                    move_from_col] in self._black_pieces:  # checks if blocked by black piece
-                    return False  # False is returned
-                if self._board[move_from_row - 1][move_from_col] in self._red_pieces:  # checks if blocked by red piece
-                    return False  # False is returned
 
-            if space_to != "":  # if trying to capture
-                if move_from_row - 1 < 0:  # checks if moving off board
+                # checks if trying to jump black piece, not allowed to jump unless capturing
+                if self._board[move_from_row - 1][move_from_col] in self._black_pieces:
                     return False
-                if jump == 0 and move_from_row - 1 == move_to_row:  # checks if no jumps have been made
-                    return False  # False is returned
-                if self._board[move_from_row - 1][
-                    move_from_col] in self._red_pieces and move_from_row - 1 != move_to_row:  # checks if blocked by red piece
-                    jump += 1  # adds to jump if not move to
-                if self._board[move_from_row - 1][
-                    move_from_col] in self._black_pieces:  # checks if blocked by blocked piece
-                    jump += 1  # adds to jump
 
+                # checks if trying to jump red piece, not allowed to jump unless capturing
+                if self._board[move_from_row - 1][move_from_col] in self._red_pieces:
+                    return False
+
+            # if trying to capture
+            if space_to != "":
+
+                # checks if moving off board
+                if move_from_row - 1 < 0:
+                    return False
+
+                # checks if capturing without jumping
+                if jump == 0 and move_from_row - 1 == move_to_row:
+                    return False
+
+                # checks if jumping red piece, adds 1 to jump
+                if self._board[move_from_row - 1][move_from_col] in self._red_pieces and move_from_row - 1 \
+                        != move_to_row:
+                    jump += 1
+
+                # checks if jumping black piece, adds 1 to jump
+                if self._board[move_from_row - 1][move_from_col] in self._black_pieces:
+                    jump += 1
+
+            # returns method, subtracting 1 from row and adding 1 to count
             return self.move_black_cannon(move_from_row - 1, move_from_col, move_to_row, move_to_col, original_row,
-                                          original_col, count + 1, jump)  # returns method, subtracting one from row
+                                          original_col, count + 1, jump)
 
-        if move_to_col - original_col >= 1:  # checks if piece is being moved right
+        # checks if moving right
+        if move_to_col - original_col >= 1:
 
-            if space_to == "":  # if moving to empty space
-                if move_from_col + 1 > 8:  # checks if moving off board
+            # checks if moving to empty space
+            if space_to == "":
+
+                # checks if moving off board
+                if move_from_col + 1 > 8:
                     return False
-                if self._board[move_from_row][
-                    move_from_col + 1] in self._black_pieces:  # checks if blocked by black piece
-                    return False  # False is returned
-                if self._board[move_from_row][move_from_col + 1] in self._red_pieces:  # checks if blocked by red piece
-                    return False  # False is returned
 
-            if space_to != "":  # if trying to capture
-                if move_from_col + 1 > 8:  # checks if moving off board
+                # checks if jumping black piece, not allowed to jump unless capturing
+                if self._board[move_from_row][move_from_col + 1] in self._black_pieces:
                     return False
-                if jump == 0 and move_from_col + 1 == move_to_col:  # if trying to capture without jumping
-                    return False  # false is returned
-                if self._board[move_from_row][
-                    move_from_col + 1] in self._red_pieces and move_from_col + 1 != move_to_col:  # checks if blocked by red piece
-                    jump += 1
-                if self._board[move_from_row][
-                    move_from_col + 1] in self._black_pieces:  # checks if blocked by black piece
+
+                # checks if jumping red piece, not allowed to jump unless capturing
+                if self._board[move_from_row][move_from_col + 1] in self._red_pieces:
+                    return False
+
+            # if trying to capture
+            if space_to != "":
+
+                # checks if moving off board
+                if move_from_col + 1 > 8:
+                    return False
+
+                # checks if capturing without jumping
+                if jump == 0 and move_from_col + 1 == move_to_col:
+                    return False
+
+                # checks if jumping red piece, adds 1 to jump
+                if self._board[move_from_row][move_from_col + 1] in self._red_pieces and move_from_col + 1 \
+                        != move_to_col:
                     jump += 1
 
+                # checks if jumping black piece, adds 1 to jump
+                if self._board[move_from_row][move_from_col + 1] in self._black_pieces:
+                    jump += 1
+
+            # returns method adding 1 to column and row
             return self.move_black_cannon(move_from_row, move_from_col + 1, move_to_row, move_to_col, original_row,
-                                          original_col, count + 1, jump)  # returns method adding one to col
+                                          original_col, count + 1, jump)
 
-        if move_to_col - original_col < 0:  # checks if piece is being moved left
+        # checks if moving left
+        if move_to_col - original_col < 0:
 
-            if space_to == "":  # if space is empty
-                if move_from_col - 1 < 0:  # checks if moving off board
+            # checks if moving to empty space
+            if space_to == "":
+
+                # checks if moving off board
+                if move_from_col - 1 < 0:
                     return False
-                if self._board[move_from_row][
-                    move_from_col - 1] in self._black_pieces:  # checks if blocked by black piece
-                    return False  # if so False is returned
+
+                # checks if trying to jump, not allowed to jump unless capturing
+                if self._board[move_from_row][move_from_col - 1] in self._black_pieces:
+                    return False
+
+                # checks if trying to jump, not allowed to jump unless capturing
                 if self._board[move_from_row][move_from_col - 1] in self._red_pieces:  # checks if blocked by red piece
                     return False  # if so False is returned
 
+            # checks if trying to capture
             if space_to != "":
-                if move_from_col - 1 < 0:  # checks if moving off board
+
+                # checks if moving off board
+                if move_from_col - 1 < 0:
                     return False
-                if jump == 0 and move_from_col - 1 == move_to_col:  # if trying to capture without jumping
-                    return False  # false is returned
-                if self._board[move_from_row][
-                    move_from_col - 1] in self._red_pieces and move_from_col - 1 != move_to_col:  # checks if blocked by red piece
+
+                # checks if trying to capture without jumping
+                if jump == 0 and move_from_col - 1 == move_to_col:
+                    return False
+
+                # checks if jumping red piece, adds 1 to jump
+                if self._board[move_from_row][move_from_col - 1] in self._red_pieces and move_from_col - 1 \
+                        != move_to_col:
                     jump += 1
-                if self._board[move_from_row][
-                    move_from_col - 1] in self._black_pieces:  # checks if blocked by black piece
+
+                # checks if jumping black piece, adds 1 to jump
+                if self._board[move_from_row][move_from_col - 1] in self._black_pieces:
                     jump += 1
+
+            # returns method, subtracting 1 from column and row.
             return self.move_black_cannon(move_from_row, move_from_col - 1, move_to_row, move_to_col, original_row,
                                           original_col, count + 1, jump)  # returns method adding one to col
 
@@ -1090,24 +1240,24 @@ class XiangqiGame:
             # if red is active player, flying black general is run to see if user move lost red game. Black in check is
             # run and if true black in checkmate is run to see if red has won game. Active player is set to black player
             # and complete is returned
-            if self._active_player == self._player_red:  # if red player moved
-                if self.flying_black_general_check():  # runs flying black general, to see if game is won by black
+            if self._active_player == self._player_red:
+                if self.flying_black_general_check():
                     self._game_state = "BLACK_WON"
-                if self.black_in_check():  # if black is in check
-                    self.black_in_checkmate()  # black is in checkmate is run
-                self.set_active_player(self._player_black)  # sets active player to black
+                if self.black_in_check():
+                    self.black_in_checkmate()
+                self.set_active_player(self._player_black)
                 return complete
 
             # if black is active player, flying red general is run to see if user move lost black game. Red in check is
             # run and if true red in checkmate is run to see if black has won game. Active player is set to red player
             # and complete is returned
-            if self._active_player == self._player_black:  # if black player moved
-                if self.flying_red_general_check():  # runs flying red general, to see if game is won by red
+            if self._active_player == self._player_black:
+                if self.flying_red_general_check():
                     self._game_state = "RED_WON"
-                if self.red_in_check():  # if red is in check
-                    self.red_in_checkmate()  # red in checkmate is run
-                self.set_active_player(self._player_red)  # sets active player red
-                if piece == self._black_general:  # updates location of black general
+                if self.red_in_check():
+                    self.red_in_checkmate()
+                self.set_active_player(self._player_red)
+                if piece == self._black_general:
                     self._black_general_loc = [move_to[0], move_to[1]]
                 return complete
 
@@ -1324,7 +1474,7 @@ class XiangqiGame:
             if x == [self._red_in_check_by[1], self._red_in_check_by[2]]:
                 black_won = False
 
-        #if black_won is true, gamestate is updated to Black_WON and true is returned
+        # if black_won is true, gamestate is updated to Black_WON and true is returned
         if black_won:
             self._game_state = "BLACK_WON"
             return True
@@ -1357,4 +1507,3 @@ class XiangqiGame:
             return True
         else:
             return False
-
