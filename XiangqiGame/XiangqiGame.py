@@ -67,29 +67,37 @@ class XiangqiGame:
 
     def get_board(self):
         """Returns current state of game board"""
+
         return self._board
 
     def set_active_player(self, player):
         """Sets active player. Game defaults active player as red"""
+
         self._active_player = player
 
     def get_active_player(self):
         """Returns active player"""
+
         return self._active_player
 
     def get_game_state(self):
         """Returns current game state"""
+
         return self._game_state
 
     def get_in_check(self):
+        """Returns in_check"""
+
         return self._in_check
 
     def get_red_general_loc(self):
-        "Returns current location of red general"
+        """Returns current location of red general"""
+
         return self._red_general_loc
 
     def get_black_general_loc(self):
         """Returns current location of black general"""
+
         return self._black_general_loc
 
     def convert_move_click(self, space):
@@ -130,6 +138,7 @@ class XiangqiGame:
 
     def get_piece(self, row, col):
         """"Returns piece at move index, converts string move to index using convert_move method"""
+
         return self._board[row][col]
 
     def flying_black_general_check(self):
@@ -279,6 +288,7 @@ class XiangqiGame:
     def move_red_elephant(self, move_from_row, move_from_col, move_to_row, move_to_col):
         """Moves red elephant. Cannot cross river, only moves 2 spaces diagonal, can be blocked by enemy pieces. If
         allowable move, returns True, else returns false."""
+
         move = False
         user_move = [move_to_row - move_from_row, move_to_col - move_from_col]
         allowed_moves = [[2, 2], [-2, -2], [2, -2], [-2, 2]]
@@ -1144,6 +1154,7 @@ class XiangqiGame:
     def move_red_soldier(self, move_from_row, move_from_col, move_to_row, move_to_col):
         """Moves red soldier, checks if move is before river if so soldier can only move vertically one place. After the
         river, soldier can move forward or horizontal one way"""
+
         move = False
         moves_before_river = [[1, 0]]
         moves_after_river = [[1, 0], [0, 1], [0, -1]]
@@ -1206,6 +1217,7 @@ class XiangqiGame:
 
     def make_move(self, move_from, move_to):
         """moves game piece at current location"""
+
         complete = False
         move_from = self.convert_move(move_from)  # converts move from
         move_to = self.convert_move(move_to)  # converts move to
@@ -1351,6 +1363,7 @@ class XiangqiGame:
 
     def return_index(self):
         """Function that gets piece locations on board. Appends to list, along with piece name. [piece, [row, col]"""
+
         self.piece_location = []  # sets piece location list to empty
 
         # appends piece and location to piece location list, used to track pieces on board
@@ -1362,6 +1375,7 @@ class XiangqiGame:
     def black_in_check(self):
         """Class that determines if red is in check. Test all available moves for red pieces. Appends true moves to list
         then checks if available moves == black general's location. If so, red is in check and true is returned"""
+
         red_piece_location = []  # list used ti keep track of location of all red pieces
         self._red_moves_allowed = []  # list used to keep track of all available red moves
         self._black_in_check_by = []  # empties list used to track of piece checking red general
@@ -1453,6 +1467,7 @@ class XiangqiGame:
     def red_in_check(self):
         """Class that determines if red is in check. Test all available moves for red pieces. Appends true moves to list
         then checks if available moves == red general's location. If so, red is in check and true is returned"""
+
         black_piece_location = []  # list used to keep track of location of all black pieces
         self._black_moves_allowed = []  # empties list used to keep track of true moves
         self._red_in_check_by = []  # empties list used to track of piece checking red general
@@ -1543,6 +1558,7 @@ class XiangqiGame:
     def red_in_checkmate(self):
         """function that test if red in checkmate. Returns all possible moves of red general. If red general does
         not contain a move that prevents it from being captured, red is in checkmate and game is over"""
+
         black_won = True
 
         # iterates through all possible moves, and returns moves of red general function
@@ -1570,6 +1586,7 @@ class XiangqiGame:
     def black_in_checkmate(self):
         """function that test if red in checkmate. Returns all possible moves of red general. If black general does
                 not contain a move that prevents it from being captured, black is in checkmate and game is over"""
+
         red_won = True
 
         # iterates through all possible moves, and returns moves of red general function
