@@ -93,33 +93,40 @@ class XiangqiGame:
         return self._black_general_loc
 
     def convert_move_click(self, space):
-        """Converts player move to index value in list, assigns value to col and row"""
+        """Converts player move to index value in list, assigns value to col and row. Used with pygame to convert
+        click coordinates to be used by move function"""
+
         move = None
 
         letter = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]  # list of letters used to find row index
-        nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]  # list of numbers used to find col ind
+        nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]  # list of numbers used to find col index
 
         # move is set to letter and number format
         move = str(letter[space[1]]) + str(nums[space[0]])
         return move
 
     def convert_move(self, space):
-        """Converts player move to index value in list, assigns value to col and row"""
-        move = (
-            [space[i:i + 1] for i in range(0, len(space), 1)])  # converts list to list, used to search letter/num list
+        """Converts player move to index value in list, assigns value to col and row. Used by move method to convert
+        user move to move that is accepted by piece move methods"""
+
+        # converts move list to list, used to search letter/num list
+        move = ([space[i:i + 1] for i in range(0, len(space), 1)])
 
         letter = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]  # list of letters used to find row index
         nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]  # list of numbers used to find col ind.
 
-        if len(move) == 3:  # if 10 in string,
-            move[1:3] = [''.join(move[1: 3])]  # joins 1 and 0 to choose 10 from list
+        # checks if moves length is 3 meaning 10 is in move, if so joins 1 and 0 to select 10 from nums list
+        if len(move) == 3:
+            move[1:3] = [''.join(move[1: 3])]
 
+        # iterates through items in move list, assigns index of items in letter and num list that match items in move
+        # list. Converts user move, to move read by piece move methods
         for x in move:
-            if x in letter:  # checks for x in letters list
-                self._col = letter.index(x)  # assigns row to index of x in letters list
-            if x in nums:  # checks for x in nums list
-                self._row = nums.index(x)  # assigns col to index of x in nums list
-        return [self._row, self._col]  # returns letters list
+            if x in letter:
+                self._col = letter.index(x)
+            if x in nums:
+                self._row = nums.index(x)
+        return [self._row, self._col]
 
     def get_piece(self, row, col):
         """"Returns piece at move index, converts string move to index using convert_move method"""
@@ -129,7 +136,7 @@ class XiangqiGame:
         """Continues while row is less than number of rows on board. If row and col equal red general location, game
         is set to black_won. Else false is returned"""
 
-        # row and col set to space 1 infront of black general
+        # row and col set to space 1 in front of black general
         row = self._black_general_loc[0] - 1
         col = self._black_general_loc[1]
 
@@ -403,7 +410,7 @@ class XiangqiGame:
         # if moving left, checks if move 1 left is blocked
         if move_to_col_check == -2:
             if self._board[move_from_row][move_from_col - 1] != "" or self._board[move_from_row][
-                move_from_col - 1] != "":
+                    move_from_col - 1] != "":
                 return False
 
         return move
@@ -707,7 +714,7 @@ class XiangqiGame:
             original_row = move_from_row
             original_col = move_from_col
 
-        # base case, returns when move fron reaches move to
+        # base case, returns when move from reaches move to
         if move_to_row == move_from_row and move_to_col == move_from_col:
             if count == 0:
                 return False
@@ -1137,65 +1144,65 @@ class XiangqiGame:
     def move_red_soldier(self, move_from_row, move_from_col, move_to_row, move_to_col):
         """Moves red soldier, checks if move is before river if so soldier can only move vertically one place. After the
         river, soldier can move forward or horizontal one way"""
-        move = False  # sets move to false
-        allowed_moves_before = [[1, 0]]  # allowed moved before river
-        allowed_moves_after = [[1, 0], [0, 1], [0, -1]]  # allowed moves after river
-        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]  # current move list
+        move = False
+        moves_before_river = [[1, 0]]
+        moves_after_river = [[1, 0], [0, 1], [0, -1]]
+        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]
 
-        if self._board[move_from_row][move_from_col] != self._red_soldier:  # if move does not contain soldier
-            return False  # false is returned
+        # checks if trying to move red soldier
+        if self._board[move_from_row][move_from_col] != self._red_soldier:
+            return False
 
-        for r in self._red_pieces:  # checks if move to contains red piece
+        # checks if move to contains a red piece
+        for r in self._red_pieces:
             if self._board[move_to_row][move_to_col] == r:
                 return False
 
-        if move_to_row <= 4:  # if move is before river
-            for x in allowed_moves_before:  # checks if valid move
+        # checks if move before river, can only move 1 place vertical before
+        if move_to_row <= 4:
+            for x in moves_before_river:
                 if x == user_move:
-                    move = True  # sets move to true
+                    move = True
 
-        if move_to_row > 4:  # if move is after after river
-            for x in allowed_moves_after:  # checks if valid move
+        # checks if move after river, can only move 1 place vertically or horizontally
+        if move_to_row > 4:
+            for x in  moves_after_river:
                 if x == user_move:
-                    move = True  # sets move to True
+                    move = True
 
-        if move:  # if move is true
-            self._player_moving = self._player_black  # sets player moving to black
-            return True  # true is returned
-        else:  # if move is not valid
-            return False  # false is returned
+        return move
 
     def move_black_soldier(self, move_from_row, move_from_col, move_to_row, move_to_col):
         """Moves black soldier, checks move is before river, if so soldier can only make vertical move. If after,
         soldier can move vertical or horizontal by 1"""
 
-        move = False  # sets move to false
-        allowed_moves_before = [[-1, 0]]  # valid moves before river
-        allowed_moves_after = [[-1, 0], [0, 1], [0, -1]]  # valid moves after river
-        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]  # current move list
+        move = False
+        moves_before_river = [[-1, 0]]
+        moves_after_river = [[-1, 0], [0, 1], [0, -1]]
+        user_move = [move_to_row - move_from_row, move_to_col - move_from_col]
 
-        if self._board[move_from_row][move_from_col] != self._black_soldier:  # if black soldier not on location
-            return False  # returns false
+        # checks if move contains black soldier
+        if self._board[move_from_row][move_from_col] != self._black_soldier:
+            return False
 
-        for r in self._black_pieces:  # checks if move to contains black piece
+        # checks if move to contains black piece
+        for r in self._black_pieces:
             if self._board[move_to_row][move_to_col] == r:
-                return False  # false is returned
+                return False
 
-        if move_to_row >= 5:  # checks if move is before river, if so allowable_move before is used as moves
-            for x in allowed_moves_before:
-                if x == user_move:  # if user move is valid
-                    move = True  # move is set to True
+        # checks if move before river, can only move verticle by 1 before
+        if move_to_row >= 5:
+            for x in moves_before_river:
+                if x == user_move:
+                    move = True
 
-        if move_to_row < 5:  # checks if move is after river, if so allowable_move_after_river is used
-            for x in allowed_moves_after:  #
-                if x == user_move:  # if user move is valid
-                    move = True  # move is set to True
+        # checks if move after river, can move 1 horizontal and vertical after
+        if move_to_row < 5:
+            for x in moves_after_river:
+                if x == user_move:
+                    move = True
 
-        if move:  # if move is true
-            self._player_moving = self._player_red  # sets player moving to red
-            return True  # true is returned
-        else:  # if move is not valid
-            return False  # false is returned
+        return move
 
     def make_move(self, move_from, move_to):
         """moves game piece at current location"""
@@ -1233,7 +1240,7 @@ class XiangqiGame:
         if piece == self._black_general:
             complete = self.move_black_general(move_from[0], move_from[1], move_to[0],
                                                move_to[1])
-            # if complete is true, black geneal location is updated
+            # if complete is true, black general location is updated
             if complete:
                 self._black_general_loc = [move_to[0], move_to[1]]
 

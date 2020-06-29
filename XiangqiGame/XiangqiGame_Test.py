@@ -39,3 +39,5 @@ class AdvisorTest(unittest.TestCase):
         self.assertFalse(self.game.make_move("f8", "g7"))
         self.assertTrue(self.game.make_move("f8", "e9"))
 
+
+
