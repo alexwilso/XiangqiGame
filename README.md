@@ -22,5 +22,4 @@ Python 3.7
 Pygame 1.9.6
 
 # Example 
-XiangqiGame.gif
 ![](XiangqiGame/Images/XiangqiGame.gif)
