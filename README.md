@@ -19,7 +19,6 @@ To run XiangqiGameMain.py make sure pygame is installed on system and run file.
 
 # Built With 
 Python 3.7         
-Pygame 1.9.6
+Pygame 1.9.6  
 
-# Example 
 ![](XiangqiGame/Images/XiangqiGame.gif)
