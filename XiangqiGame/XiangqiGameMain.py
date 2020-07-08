@@ -1,21 +1,16 @@
-# Author: 
-# Date: 
-# Description:
-
-
 import pygame
 from XiangqiGame import XiangqiGame
 
-pygame.font.init()  # initializes font
-width = 1200  # sets width of gameboard
-height = 1200  # sets height of gameboard
+pygame.font.init()
+width = 1200  # sets width of game board
+height = 1200  # sets height of game board
 number_rows = 10  # number of rows
 number_cols = 9  # number of columns
 square_width = 1000 // 10  # width of game squares
 square_height = 1000 // 10  # height of game squares
 images = {}  # dictionary used to store images
 max_fps = 20
-font = pygame.font.Font("freesansbold.ttf", 30)
+font = pygame.font.Font("freesansbold.ttf", 25)
 title_font = pygame.font.Font("freesansbold.ttf", 95)
 
 icon = pygame.image.load("Pieces/xiangqi.png")
@@ -114,13 +109,14 @@ def show_in_check(screen, in_check):
     """Displays piece in check on board"""
 
     in_check = font.render("In Check: " + str(in_check), True, (255, 255, 255))
-    screen.blit(in_check, (850, 1133))
+    screen.blit(in_check, (845, 1133))
 
 
 def draw_xiangqi_game(screen, gs, row, col, move_from, move_to):
     """Function that fills screen, draws board and pieces, shows title, active player, gamestate, and in check
     variables."""
 
+    screen.fill(pygame.Color(101, 67, 33))  # fills background color of screen
     draw_board(screen, row, col, move_from, move_to)
     draw_pieces(screen, gs.get_board())
     show_active_player(screen, gs.get_active_player())
@@ -137,7 +133,6 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((width, height))  # sets display with 1200x1200 dimensions
     pygame.display.set_caption("Xiangqi")  # displays Xiangqi title
-    screen.fill(pygame.Color(101, 67, 33))  # fills background color of screen
     gs = XiangqiGame()  # gets XiangiGame class
     load_images()
     click_number = 0
@@ -167,7 +162,7 @@ def main():
                 if location[0] < 100 or location[0] > 1100 or location[1] > 1100 or location[1] < 100:
                     print(False)
 
-                # user selected postion on board. Location is converted to row/column format (ex. col = 1, row = 2).
+                # user selected position on board. Location is converted to row/column format (ex. col = 1, row = 2).
                 # this is used to move pieces with move function in XiangqiGame file.
                 else:
                     col = ((location[0] - 49) // 100) - 1

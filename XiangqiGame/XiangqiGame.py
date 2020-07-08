@@ -1,11 +1,11 @@
 # Author: Alex Wilson
-# Date: 3/12/2020
-# Description: Porfolio project - XiangqiGame.py
-
+# Description:
 # This module is an engine for the Xiangqi game made for CS162. Very similar to American Chess with a few differences.
 # The rules can be found here https://en.wikipedia.org/wiki/Xiangqi. The object of the game is to capture the other
 # players general. When no move can be made to prevent the general's capture, checkmate is called and the game is won
-# by the other player. The game consist of two players, red and black. To begin, instantiate a new XiangqiGame object.
+# by the other player. The game consist of two players, red and black. Moves are completed using make move method that
+# takes string that represents square to move from and square to move to. Ex. make_move("a1", "b2"). To begin
+# instantiate a new XiangqiGame object.
 
 class XiangqiGame:
     """Class that represents Xiangqi game. Class puts pieces on board, sets active player, determines piece movements,
@@ -1216,7 +1216,8 @@ class XiangqiGame:
         return move
 
     def make_move(self, move_from, move_to):
-        """moves game piece at current location"""
+        """moves game piece at current location. Takes input in form of string to move from and move to
+        ("column", "row"). Columns labeled a-i and rows labeled 1-10. Example of accepted input ("a1", "b1")"""
 
         complete = False
         move_from = self.convert_move(move_from)  # converts move from
@@ -1323,8 +1324,8 @@ class XiangqiGame:
             # in check after move, move is not completed and false is returned
             if self._in_check == "BLACK_IN_CHECK":
                 if self.black_in_check():
-                    self._board[move_to[0]][move_to[1]] = piece_to  # move_to set to piece
-                    self._board[move_from[0]][move_from[1]] = piece  # original move from set to empty
+                    self._board[move_to[0]][move_to[1]] = piece_to
+                    self._board[move_from[0]][move_from[1]] = piece
                     return False
 
             # if red is in check, red in check is run again to see if move gets red out of check. If red still
@@ -1350,7 +1351,7 @@ class XiangqiGame:
             # run and if true red in checkmate is run to see if black has won game. Active player is set to red player
             # and complete is returned
             if self._active_player == self._player_black:
-                if self.flying_red_general_check():
+                if self.flying_black_general_check():
                     self._game_state = "RED_WON"
                 if self.red_in_check():
                     self.red_in_checkmate()
@@ -1549,6 +1550,7 @@ class XiangqiGame:
         # calls red in checkmate to see if game is won by black
         if self._red_in_check_by:
             self._in_check = "RED_IN_CHECK"
+            print(self._red_in_check_by)
             return True
 
         # black is not in check, false is returned
@@ -1560,15 +1562,17 @@ class XiangqiGame:
         not contain a move that prevents it from being captured, red is in checkmate and game is over"""
 
         black_won = True
-
         # iterates through all possible moves, and returns moves of red general function
         # if red general is able to move, red is not in checkmate.
         for y in self.all_moves:
             if self.move_red_general(self._red_general_loc[0], self._red_general_loc[1], y[0], y[1]):
-                black_won = False
+                if [y[0], y[1]] == [self._red_in_check_by[1], self._red_in_check_by[2]]:
+                    black_won = True
+                else:
+                    black_won = False
 
-        # gets all moves allowed by red pieces
-        self.red_in_check()
+        # # gets all moves allowed by red pieces
+        # self.red_in_check()
 
         # iterates through all red moves
         # if red general has can move to space black cannot, black won is set to False
@@ -1589,14 +1593,17 @@ class XiangqiGame:
 
         red_won = True
 
-        # iterates through all possible moves, and returns moves of red general function
+        # iterates through all possible moves, and returns moves of red black function
         # if black general is able to move, black is not in checkmate.
         for y in self.all_moves:
             if self.move_black_general(self._black_general_loc[0], self._black_general_loc[1], y[0], y[1]):
-                red_won = False
+                if [y[0], y[1]] == [self._black_in_check_by[1], self._black_in_check_by[2]]:
+                    red_won = True
+                else:
+                    red_won = False
 
-        # calls black in check to set available red moves
-        self.black_in_check()
+        # # calls black in check to set available red moves
+        # self.black_in_check()
 
         # iterates through all black moves
         # if black can capture piece trying to capture black general, black is not in checkmate
