@@ -1,4 +1,4 @@
-# XiangqiGame
+# Xiangqi Game
 This module is an engine for the Xiangqi game made for CS162. Similar to American Chess with a few differences.
 The object of the game is to put the enemy's general in a position in which they cannot escape being captured. When no move can be made to prevent the general's capture, checkmate is called and the game is won by the other player. The game consist of two players, red and black. The board consist of rows labeled 1-9 and columns labeled a-i. Moves are completed using make move method that takes string that represents square to move from and square to move to. Ex. make_move("a1", "b2"). To begin instantiate a new XiangqiGame object.
 
@@ -22,4 +22,5 @@ Python 3.7
 Pygame 1.9.6
 
 # Example 
-https://imgflip.com/gif/47ntan
+XiangqiGame.gif
+![](XiangqiGame/Images/XiangqiGame.gif)
