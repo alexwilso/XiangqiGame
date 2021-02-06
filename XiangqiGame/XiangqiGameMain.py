@@ -1,6 +1,7 @@
 import pygame
 from XiangqiGame import XiangqiGame
 
+
 pygame.font.init()
 width = 1200  # sets width of game board
 height = 1200  # sets height of game board
